@@ -7,7 +7,6 @@ library(sf)
 library(raster)
 library(CoordinateCleaner) # package to clean GBIF records
 library(countrycode) # package to convert GBIF country codes for cleaning
-library(geodata) # package to download worldclim temp and precipitation data
 library(corHMM) # 20220620 UPDATED corHMM FROM CRAN rate matrices work as in github install
 library(phytools)
 library(phylolm)
@@ -16,7 +15,7 @@ library(doParallel)
 library(plotrix)
 
 # function to cache pre-prepared R data. If RDS already in cache will read data
-source("scripts/cache_RDS.R")
+source("scripts/functions/cache_RDS.R")
 
 # read in consensus tree from Ramírez-Barahona et al (2020)
 tree <- ape::read.tree("data_input/eFLOWER-1209_RC_complete_MCC.phy")

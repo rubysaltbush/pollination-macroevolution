@@ -5,10 +5,9 @@
 pollination1209 <- cache_RDS("data_output/pollination1209.csv", read_function = readr::read_csv,
   save_function = write_csv, function() {
     # read in original data
-    pollination1209 <- readr::read_csv("data_input/qryeFLOWER-1209taxa_AusTraits_TRY_2021_data_entry.csv")
+    pollination1209 <- readr::read_csv("data_input/pollination_macroevolution_datatopublish_20221014.csv")
 
-    # remove austraits and TRY columns from data, condense to columns of
-    # interest for now
+    # remove references and text descriptions, condense to columns of interest
     pollination1209 <- pollination1209 %>%
       dplyr::select(taxon_name:ParCladeTax, pollination:wind_pollination_explicitly_tested,
         pollination_data_source:scent, rank_scored_at) %>%
@@ -124,9 +123,8 @@ pollination1209 <- cache_RDS("data_output/pollination1209.csv", read_function = 
     table(pollination1209$syndrome_or_system)
     # 734 syndromes, 425 systems, makes sense looking at confidence scores
     
-    # how many families covered by final data?
     table(pollination1209$wind_water_vert_insect)
-    # number of families in final data? 434?!
+    # 434 families in final data
     nrow(pollination1209 %>% dplyr::select(ParFamTax) %>% distinct())
     # number of families WITH data 433!
     nrow(pollination1209 %>% dplyr::filter(wind_water_vert_insect != "?") %>% dplyr::select(ParFamTax) %>% distinct())
@@ -136,7 +134,9 @@ pollination1209 <- cache_RDS("data_output/pollination1209.csv", read_function = 
     without <- pollination1209 %>% dplyr::filter(wind_water_vert_insect == "?") %>% dplyr::select(ParFamTax) %>% distinct()
     with <- pollination1209 %>% dplyr::filter(wind_water_vert_insect != "?") %>% dplyr::select(ParFamTax) %>% distinct()
     without[!(without$ParFamTax %in% with$ParFamTax),]
-    # Hoplestigmataceae
+    # Hoplestigmataceae the only family missing any pollination data
+    # on investigation only two species in this family are rare African trees
+    # in rainforest, only info available on pollination syndrome ambiguous
     rm(with, without)
     
     # how often has wind pollination been explicitly tested?
@@ -178,17 +178,25 @@ pollination1209 <- cache_RDS("data_output/pollination1209.csv", read_function = 
     pollination1209_biome$taxon_name <- gsub("Anagallis_tenella", "Lysimachia_tenella", pollination1209_biome$taxon_name)
     pollination1209_biome$taxon_name <- gsub("Sedum_rubrotinctum", "Sedum_x_rubrotinctum", pollination1209_biome$taxon_name)
     pollination1209_biome$taxon_name <- gsub("Tetracarpaea_tasmanica", "Tetracarpaea_tasmannica", pollination1209_biome$taxon_name)
+    # just keep the SB50 (majority superbiome), won't use others
+    pollination1209_biome <- pollination1209_biome %>%
+      dplyr::select(taxon_name, SB50)
     
     # join onto pollination 1209
     pollination1209 <- pollination1209 %>%
       dplyr::left_join(pollination1209_biome, by = "taxon_name")
+    table(pollination1209$SB50)
     rm(pollination1209_biome)
 
     #### GBIF location data ####
+    # load cached processed GBIF data (or process data if not)
+    gbif_spec_filtered <- cache_RDS("data_output/gbif_specimens_filtered.csv", read_function = readr::read_csv,
+              save_function = write_csv, function() {
+    
     # read in GBIF location data downloaded and cleaned by Will Cornwell
     gbif <- read_csv("data_input/filtered_obs_ruby.csv")
     
-    # filter to preserved specimens only, human obs records a bit too iffy
+    # filter to preserved specimens only, human obs records too iffy
     gbif_specimens <- gbif %>%
       dplyr::filter(basisofrecord == "PRESERVED_SPECIMEN")
     # still have matches for most species
@@ -270,43 +278,7 @@ pollination1209 <- cache_RDS("data_output/pollination1209.csv", read_function = 
     # check species coverage after cleaning
     sum(pollination1209$taxon_name %in% gbif_spec_filtered$taxon_name)
     # 1137 of 1201 pollination1209 taxa with gbif herbarium records, lost 3 species
-    
-    # work out number of GBIF records per taxon
-    no_records <- gbif_spec_filtered %>%
-      dplyr::group_by(taxon_name) %>%
-      dplyr::summarise(no_records = length(decimallatitude))
-    pollination1209 <- pollination1209 %>%
-      dplyr::left_join(no_records, by = "taxon_name")
-    rm(no_records)
-    paste("There are", mean(pollination1209$no_records, na.rm = TRUE), "GBIF records per taxon on average")
-    # 271.6 records per taxon
-    # calculate standard error for number of records per taxon
-    sqrt(var(pollination1209$no_records, na.rm = TRUE) / length(pollination1209$no_records))
-    # 12.9 standard error - minimum 1 (for 26 taxa), maximum 5568
-    # if we had a cutoff of e.g. 10 how many would we lose?
-    test_cutoff <- pollination1209[!(is.na(pollination1209$no_records)),]
-    sum(test_cutoff$no_records < 10)
-    # 162 with records fewer than ten
-    sum(test_cutoff$no_records < 5)
-    # 100 with records fewer than 5 BUT these are likely genuine records of
-    # rarely encountered/obscure taxa, will leave for now
-    rm(test_cutoff)
-    
     rm(gbif, gbif_specimens, flags)
-    
-    # calculate average latitude for each species
-    latitude <- gbif_spec_filtered %>%
-      dplyr::group_by(taxon_name) %>%
-      dplyr::summarise(meanlat = mean(decimallatitude))
-    # and average ABSOLUTE latitude
-    abs_latitude <- gbif_spec_filtered %>%
-      dplyr::group_by(taxon_name) %>%
-      dplyr::summarise(abs_meanlat = mean(abs(decimallatitude)))
-    # join onto pollination1209 data
-    pollination1209 <- pollination1209 %>%
-      dplyr::left_join(latitude, by = "taxon_name") %>%
-      dplyr::left_join(abs_latitude, by = "taxon_name")
-    rm(latitude, abs_latitude)
     
     # time to get spatial!
     #first duplicate latitude/longitude columns so I don't lose these
@@ -323,65 +295,51 @@ pollination1209 <- cache_RDS("data_output/pollination1209.csv", read_function = 
       plot()
     # looks like distribution on POWO! yay
     
-    # read in rasters of LAI, mean temperature, mean rainfall
-    # use geodata package to access WorldClim data for mean temp and precipitation
-    # takes a while to download first time - reset R options so it doesn't timeout
-    options(timeout = 10000)
-    worldclim <- geodata::worldclim_global(var = "bio", res = 2.5,
-                                           path = "cache/")
-    
-    # BIO1 = Annual Mean Temperature
-    meantemp <- worldclim$wc2.1_2.5m_bio_1
-    plot(meantemp)
-    # BIO12 = Annual Precipitation
-    totprec <- worldclim$wc2.1_2.5m_bio_12
-    plot(totprec)
-    
-    rm(worldclim)
-    
-    # might not look at wind speed for now as not sure how reliable a coarse
-    # measure of wind speed will be at this scale, given windiness probably 
-    # varies a lot with topography, humidity and habitat openness
-    
     # read in global raster of mean LAI for 1981-2020, calculated by taking
     # mean of GLOBMAP V3 (https://doi.org/10.5281/zenodo.4700264) ~8km res
     # averaging method documented in prep_LAI.R
-    globalmeanLAI1981_2020 <- terra::rast("data_output/globalmeanLAI1981_2020.tif")
+    globalmeanLAI1981_2020 <- terra::rast("data_input/globalmeanLAI1981_2020.tif")
     plot(globalmeanLAI1981_2020)
-    # slightly different extent to WorldClim rasters but otherwise lines up
     
-    # intersect records with rasters, calculate average LAI, temp and rain for each
-    record_meantemp <- terra::extract(meantemp, vect(gbif_filt_spatial))
-    record_totprec <- terra::extract(totprec, vect(gbif_filt_spatial))
-    record_meanLAI <- terra::extract(globalmeanLAI1981_2020, vect(gbif_filt_spatial))
-    rm(meantemp, totprec, globalmeanLAI1981_2020)
+    # intersect records with raster, calculate average LAI
+    record_meanLAI <- terra::extract(globalmeanLAI1981_2020, terra::vect(gbif_filt_spatial))
+    rm(globalmeanLAI1981_2020)
     
     # corrupts gbif_filt_spatial if not calculated separately then joined as below
     gbif_filt_spatial <- gbif_filt_spatial %>%
       dplyr::mutate(ID = as.numeric(rownames(gbif_filt_spatial))) %>%
-      dplyr::left_join(record_meantemp, by = "ID") %>%
-      dplyr::left_join(record_totprec, by = "ID") %>%
       dplyr::left_join(record_meanLAI, by = "ID") %>%
       dplyr::select(-ID)
-    rm(record_meantemp, record_totprec, record_meanLAI)
+    rm(record_meanLAI)
     
     # remove sf spatial element from gbif_filt_spatial otherwise VERY slow
     gbif_spec_filtered <- sf::st_drop_geometry(gbif_filt_spatial)
+    rm(gbif_filt_spatial)
     # and output this data just in case
     write_csv(gbif_spec_filtered, "data_output/gbif_specimens_filtered.csv")
-    rm(gbif_filt_spatial)
+      })
     
-    # calculate mean MATemperature per species
-    species_meantemp <- gbif_spec_filtered %>%
-      dplyr::select(taxon_name, wc2.1_2.5m_bio_1) %>%
+    # number of GBIF records per taxon
+    no_records <- gbif_spec_filtered %>%
       dplyr::group_by(taxon_name) %>%
-      dplyr::summarise(meanMAT = mean(wc2.1_2.5m_bio_1, na.rm = TRUE))
+      dplyr::summarise(no_records = length(decimallatitude))
+    pollination1209 <- pollination1209 %>%
+      dplyr::left_join(no_records, by = "taxon_name")
+    rm(no_records)
+    paste("There are", mean(pollination1209$no_records, na.rm = TRUE), "GBIF records per taxon on average")
+    # 271.6 records per taxon
+    # calculate standard error for number of records per taxon
+    sqrt(var(pollination1209$no_records, na.rm = TRUE) / length(pollination1209$no_records))
+    # 12.9 standard error - minimum 1 (for 26 taxa), maximum 5568
     
-    # calculate mean TAPrecipitation per species
-    species_totprec <- gbif_spec_filtered %>%
-      dplyr::select(taxon_name, wc2.1_2.5m_bio_12) %>%
+    # calculate average ABSOLUTE latitude for each species
+    abs_latitude <- gbif_spec_filtered %>%
       dplyr::group_by(taxon_name) %>%
-      dplyr::summarise(meanTAP = mean(wc2.1_2.5m_bio_12, na.rm = TRUE))
+      dplyr::summarise(abs_meanlat = mean(abs(decimallatitude)))
+    # join onto pollination1209 data
+    pollination1209 <- pollination1209 %>%
+      dplyr::left_join(abs_latitude, by = "taxon_name")
+    rm(abs_latitude)
     
     # calculate mean LeafAI per species
     species_meanLAI <- gbif_spec_filtered %>%
@@ -394,65 +352,10 @@ pollination1209 <- cache_RDS("data_output/pollination1209.csv", read_function = 
     species_meanLAI <- species_meanLAI %>%
       dplyr::filter(meanLAI > 0)
     
-    # per Rachael's request, also calculate species median and SEM LAI
-    # Standard Error of the Mean
-    species_SEMLAI <- gbif_spec_filtered %>%
-      dplyr::select(taxon_name, globalmeanLAI1981_2020) %>%
-      dplyr::group_by(taxon_name) %>%
-      dplyr::summarise(SEMLAI = sd(globalmeanLAI1981_2020, na.rm = TRUE)/sqrt(length(globalmeanLAI1981_2020)))
-    
-    # species median LAI
-    species_medianLAI <- gbif_spec_filtered %>%
-      dplyr::select(taxon_name, globalmeanLAI1981_2020) %>%
-      dplyr::group_by(taxon_name) %>%
-      dplyr::summarise(medianLAI = median(globalmeanLAI1981_2020, na.rm = TRUE))
-    # again taxa with 0 median LAI occur on small islands, likely 0 in error
-    # remove 5 taxa with 0 LAI
-    species_medianLAI <- species_medianLAI %>%
-      dplyr::filter(medianLAI > 0)
-    
     # join species means to pollination data
     pollination1209 <- pollination1209 %>%
-      dplyr::left_join(species_meantemp, by = "taxon_name") %>%
-      dplyr::left_join(species_totprec, by = "taxon_name") %>%
-      dplyr::left_join(species_meanLAI, by = "taxon_name") %>%
-      dplyr::left_join(species_medianLAI, by = "taxon_name") %>%
-      dplyr::left_join(species_SEMLAI, by = "taxon_name")
-    rm(species_meantemp, species_totprec, species_meanLAI, species_medianLAI,
-       species_SEMLAI, gbif_spec_filtered)
-    
-    # add category of tropical/nontropical based on species' mean absolute latitude
-    pollination1209 <- pollination1209 %>%
-      dplyr::mutate(trop_nontrop = if_else(abs_meanlat <= 23.43635, "tropical", "nontropical"))
-    
-    # work out appropriate cutoff for LAI - from mapping about 40 looks appropriate??
-    sum(pollination1209$meanLAI >= 40, na.rm = TRUE) # 280 above 40, maybe too high?
-    sum(pollination1209$meanLAI >= 30, na.rm = TRUE) # 437 above 30
-    
-    # try kmeans clustering to determine best cutoff point for LAI
-    # subset just taxon and LAI
-    forcluster <- pollination1209 %>%
-      dplyr::select(meanLAI, taxon_name) %>%
-      dplyr::filter(!is.na(meanLAI)) %>%
-      as.data.frame()
-    rownames(forcluster) <- forcluster$taxon_name
-    forcluster[,2] <- NULL
-    
-    # cluster using kmeans to put into two categories
-    kmeansLAI <- kmeans(forcluster, centers = 2)
-    open_closed <- data.frame(forcluster, open_closed = kmeansLAI$cluster)
-    open_closed$taxon_name <- rownames(open_closed)
-    rownames(open_closed) <- NULL
-    # kmeans clustering makes cutoff at 30 LAI
-    open_closed <- open_closed %>%
-      dplyr::select(open_closed, taxon_name)
-    
-    # join clusters back onto pollination data
-    # 1 is closed vegetation, 2 is open vegetation
-    pollination1209 <- pollination1209 %>%
-      dplyr::left_join(open_closed, by = "taxon_name")
-    rm(open_closed, forcluster, kmeansLAI)
-    table(pollination1209$open_closed)
+      dplyr::left_join(species_meanLAI, by = "taxon_name")
+    rm(species_meanLAI, gbif_spec_filtered)
     
     # scatter plot of LAI vs absolute latitude coloured by superbiome
     # out of interest

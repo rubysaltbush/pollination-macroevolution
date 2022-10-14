@@ -7,7 +7,6 @@ install.packages("raster") # for rasterised spatial data
 install.packages("CoordinateCleaner") # to clean GBIF records
 install.packages("rnaturalearthdata") # needed to run CoordinateCleaner tests
 install.packages("countrycode") # needed to run CoordinateCleaner tests
-install.packages("geodata") # downloads worldclim temp and precipitation data
 # if installing corHMM on Linux need to install Rmpfr package in terminal first
 # using command apt install   libmpfr-dev
 install.packages("corHMM") # IMPORTANT INSTALL VERSION 2.8!!!
