@@ -1,0 +1,30 @@
+[1] "abs_lat"
+Call:
+phylolm::phyloglm(formula = wind_animal ~ abs_meanlat, data = poll_pgls, 
+    phy = tree_nowaterpolymissing, method = "logistic_IG10", 
+    boot = 100)
+       AIC     logLik Pen.logLik 
+     424.3     -209.2     -204.1 
+
+Parameter estimate(s) from GEE approximation:
+alpha: 0.002932405 
+
+Coefficients:
+(Intercept) abs_meanlat 
+  2.6352772  -0.0212158 
+[1] " "
+[1] "LAI"
+Call:
+phylolm::phyloglm(formula = wind_animal ~ meanLAI, data = poll_pgls, 
+    phy = tree_nowaterpolymissing, method = "logistic_IG10", 
+    boot = 100)
+       AIC     logLik Pen.logLik 
+     416.8     -205.4     -200.1 
+
+Parameter estimate(s) from GEE approximation:
+alpha: 0.002789719 
+
+Coefficients:
+(Intercept)     meanLAI 
+ 1.67093479  0.01621959 
+[1] " "
