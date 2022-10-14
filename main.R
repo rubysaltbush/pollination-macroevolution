@@ -32,7 +32,7 @@ source("scripts/pollination1209.R")
 
 # run corHMM Ancestral State Reconstructions of pollination mode in angiosperms
 # takes ~2 hours to run if not already cached
-source("scripts/ASR.R")
+source("scripts/analysis/ASR.R")
 
 # for graphs assign fixed colours
 source("scripts/my_colours.R")
@@ -40,18 +40,15 @@ source("scripts/my_colours.R")
 # stochastic character mapping of ASR results
 # exports most major figures from paper
 # takes a while to run
-source("scripts/simmap.R")
+source("scripts/analysis/simmap.R")
 
 # correlating evolution of pollination to environment
 
 # first try phylogenetic logistic regression for continuous and categorical variables
-source("scripts/PGLS.R")
+source("scripts/analysis/PGLS.R")
 
-# then double check which root priors to use
-source("scripts/test_root_priors.R")
-
-# then run models of biome evolution!
-source("scripts/biomes.R")
+# then run correlation models for superbiome/pollination evolution
+source("scripts/analysis/biomes.R")
 
 # stochastic character mapping on posterior trees to consider phylogenetic uncertainty
 # needs to be run on machine with lots of memory (~3 TB) and many (~36) cores
