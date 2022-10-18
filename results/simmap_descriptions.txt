@@ -1,0 +1,125 @@
+[1] "wind_animal_ARD"
+1000 trees with a mapped discrete character with states:
+ 2, 4 
+
+trees have 53.362 changes between states on average
+
+changes are of the following types:
+       2,4    4,2
+x->y 7.265 46.097
+
+mean total time spent in each state is:
+                2            4    total
+raw  7536.2140567 6.872165e+04 76257.87
+prop    0.0988254 9.011746e-01     1.00
+
+[1] " "
+
+Distribution of changes from stochastic mapping:
+	2->4		4->2
+	Min.   :2	Min.   :39
+	Median :7	Median :46
+	Mean   :7.26	Mean   :46.1
+	Max.   :16	Max.   :54
+
+95% HPD interval(2->4): [3, 11]
+95% HPD interval(4->2): [41, 50]
+
+[1] " "
+[1] "vert_insect_ARD"
+1000 trees with a mapped discrete character with states:
+ 5, 6 
+
+trees have 73.395 changes between states on average
+
+changes are of the following types:
+        5,6    6,5
+x->y 39.709 33.686
+
+mean total time spent in each state is:
+                5            6    total
+raw  6.227614e+04 2.538043e+03 64814.19
+prop 9.608412e-01 3.915877e-02     1.00
+
+[1] " "
+
+Distribution of changes from stochastic mapping:
+	5->6		6->5
+	Min.   :28	Min.   :17
+	Median :40	Median :33
+	Mean   :39.71	Mean   :33.69
+	Max.   :54	Max.   :74
+
+95% HPD interval(5->6): [32, 47]
+95% HPD interval(6->5): [21, 46]
+
+[1] " "
+[1] "wind_water_vert_insect_ARD"
+1000 trees with a mapped discrete character with states:
+ 2, 3, 5, 6 
+
+trees have 130.626 changes between states on average
+
+changes are of the following types:
+      2,3   2,5   2,6 3,2   3,5 3,6    5,2   5,3    5,6   6,2   6,3    6,5
+x->y 1.54 6.997 0.028   0 0.007   0 47.929 0.536 39.776 0.003 0.001 33.809
+
+mean total time spent in each state is:
+                2            3            5            6   total
+raw  7912.2358458 6.401695e+02 6.765238e+04 2.572114e+03 78776.9
+prop    0.1004385 8.126361e-03 8.587845e-01 3.265061e-02     1.0
+
+[1] " "
+
+Distribution of changes from stochastic mapping:
+
+	2->3		2->5
+	Min.   :1	Min.   :2
+	Median :2	Median :7
+	Mean   :1.54	Mean   :7
+	Max.   :4	Max.   :18
+
+	2->6		3->2
+	Min.   :0	Min.   :0
+	Median :0	Median :0
+	Mean   :0.03	Mean   :0
+	Max.   :2	Max.   :0
+
+	3->5		3->6
+	Min.   :0	Min.   :0
+	Median :0	Median :0
+	Mean   :0.01	Mean   :0
+	Max.   :1	Max.   :0
+
+	5->2		5->3
+	Min.   :40	Min.   :0
+	Median :48	Median :1
+	Mean   :47.93	Mean   :0.54
+	Max.   :59	Max.   :2
+
+	5->6		6->2
+	Min.   :28	Min.   :0
+	Median :40	Median :0
+	Mean   :39.78	Mean   :0
+	Max.   :51	Max.   :1
+
+	6->3		6->5
+	Min.   :0	Min.   :17
+	Median :0	Median :33
+	Mean   :0	Mean   :33.81
+	Max.   :1	Max.   :67
+
+95% HPD interval(2->3): [1, 2]
+95% HPD interval(2->5): [3, 11]
+95% HPD interval(2->6): [0, 0]
+95% HPD interval(3->2): [0, 0]
+95% HPD interval(3->5): [0, 0]
+95% HPD interval(3->6): [0, 0]
+95% HPD interval(5->2): [43, 52]
+95% HPD interval(5->3): [0, 1]
+95% HPD interval(5->6): [32, 47]
+95% HPD interval(6->2): [0, 0]
+95% HPD interval(6->3): [0, 0]
+95% HPD interval(6->5): [22, 47]
+
+[1] " "

@@ -2,7 +2,7 @@
 # using custom arclabel function
 
 RB2020_cladelabels_fan <- function(offset = 1){ # use offset argument to move labels closer (<1) or further away (>1) from tree
-  source("scripts/arclabel.R") # get arclabel function
+  source("scripts/functions/arclabel.R") # get arclabel function
   arclabel(text = "ANA", tips = c(1, 12), 
            lwd = 40, cex = 3.2, col = "#bdbdbd",
            ln.offset = offset + .07, lab.offset = offset + .11,
