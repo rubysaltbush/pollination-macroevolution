@@ -4,7 +4,15 @@
 
 # TO DO - export NICE simmaps with time and clades labelled
 
+# drop tips of tree where binary characters missing
+tree_wind_animal <- ape::drop.tip(tree, pollination1209$taxon_name[pollination1209$wind_animal == "?"])
+tree_vert_insect <- ape::drop.tip(tree, pollination1209$taxon_name[pollination1209$vert_insect == "?"])
 
+# remove ER models from list
+ASR_forsimmap <- ASR_forsimmap[-c(2,4)]
+
+# and add full 4 state model to list
+ASR_forsimmap$wind_water_vert_insect_ARD <- ASR$wind_water_vert_insect_ARD
 
 #### run simmap analyses ####
 
@@ -13,7 +21,7 @@
 # list to store results of simmaps
 simmaps <- list()
 
-# stuff to do the below in parallel (experiment for running same on multiPhylo)
+# run simmaps in parallel
 start_time <- Sys.time()
 simmaps <- foreach(name = names(ASR_forsimmap)) %dopar% {
   phy <- ASR_forsimmap[[name]]$phy
@@ -36,32 +44,8 @@ simmaps <- foreach(name = names(ASR_forsimmap)) %dopar% {
 names(simmaps) <- names(ASR_forsimmap)
 end_time <- Sys.time()
 end_time - start_time
-# Time difference of 2.662994 mins for 3*1000 sims on 3 cores MYSTERIOUS
-rm(matrices, end_time, start_time)
-
-# ALSO make simmap of wind_water_vert_insect with 1000 simulations
-# to plot just the first simmap but also to get interesting stuff from
-# multiple simulations maybe? like comparing transitions between
-# water vs wind vs insect vs vertebrate???
-
-phy <- ASR$wind_water_vert_insect_ARD$phy
-data <- ASR$wind_water_vert_insect_ARD$data
-data[is.na(data)] <- "?"
-model <- ASR$wind_water_vert_insect_ARD$solution
-model[is.na(model)] <- 0
-diag(model) <- -rowSums(model)
-start_time <- Sys.time()
-simmaps$wind_water_vert_insect_ARD <- corHMM::makeSimmap(tree = phy,
-                                                         data = data,
-                                                         model = model,
-                                                         rate.cat = 1,
-                                                         nSim = 1000,
-                                                         nCores = no_cores)
-class(simmaps$wind_water_vert_insect_ARD) <- c("multiSimmap", "multiPhylo")
-end_time <- Sys.time()
-end_time - start_time
-# Time difference of 2.208827 mins for 1*1000 sims on 3 cores
-rm(data, model, phy, start_time, end_time)
+# Time difference of 3 mins for 3*1000 sims on 3 cores
+rm(end_time, start_time)
 
 # describe and calculate 95% confidence intervals etc for # of transitions in simmaps
 # for SOME REASON rewriting below as foreach makes it take longer and use more memory
@@ -74,20 +58,19 @@ for(name in names(simmaps)){
 }
 end_time <- Sys.time()
 end_time - start_time
-# Time difference of 2.461341 mins
+# Time difference of 2 mins
 rm(name, start_time, end_time)
 
 # check out results!
 simmap_descriptions$wind_animal_ARD
 simmap_density$wind_animal_ARD
-simmap_descriptions$wind_water_vert_insect_ARD
-simmap_density$wind_water_vert_insect_ARD
-simmap_descriptions$abiotic_animal_ARD
-simmap_density$abiotic_animal_ARD
 simmap_descriptions$vert_insect_ARD
 simmap_density$vert_insect_ARD
-# more transitions on average between insect and vertebrate pollination (74.1)
-# than between wind and animal (53) or animal and abiotic (55)
+simmap_descriptions$wind_water_vert_insect_ARD
+simmap_density$wind_water_vert_insect_ARD
+
+# more transitions on average between insect and vertebrate pollination (73)
+# than between wind and animal (53)
 # 130 changes between pollination modes overall
 
 # export print results from simmapping to text file
@@ -163,17 +146,17 @@ phytools::plotSimmap(simmaps$wind_water_vert_insect_ARD[1],
                      )
 
 
-# first label Cretaceous-Palaeogene boundary at 66 mybp
+# first label Cretaceous-Palaeogene boundary at 66 mya
 plotrix::draw.circle(0, 0, radius = max(nodeHeights(tree)) - 66, 
                      col = "#dadada", lty = 0)
 
-# then label Jurassic-Cretaceous boundary at 145 mybp
+# then label Jurassic-Cretaceous boundary at 145 mya
 plotrix::draw.circle(0, 0, radius = max(nodeHeights(tree)) - 145, 
                      col = "#f8f6f7", lty = 0)
 
 # then add text to boundary points
-text(x = max(nodeHeights(tree)) - 66, y = -4, "K-Pg 66 mybp", cex = 2, col = "#636363")
-text(x = max(nodeHeights(tree)) - 145, y = -6, "J-K 145 mybp", cex = 2, col = "#636363")
+text(x = max(nodeHeights(tree)) - 66, y = -4, "66 mya", cex = 2, col = "#636363")
+text(x = max(nodeHeights(tree)) - 145, y = -6, "145 mya", cex = 2, col = "#636363")
 
 # repeat plot call to draw plot over top of time labels
 phytools::plotSimmap(simmaps$wind_water_vert_insect_ARD[1], 
@@ -195,7 +178,7 @@ ape::tiplabels(tip = as.numeric(rownames(wwvi_tips)), pie = wwvi_tips,
                 piecol = cols, cex = 0.15)
 
 # source custom arc labelling function
-source("scripts/arclabel.R")
+source("scripts/functions/arclabel.R")
 
 # # loop through and draw labels on phylogeny for larger orders
 for(i in 1:length(for_cladelabels$ParOrdTax)) {
@@ -206,7 +189,7 @@ for(i in 1:length(for_cladelabels$ParOrdTax)) {
 rm(i, for_cladelabels)
 
 # label large clades as per RB2020 labelling
-source("scripts/RB2020_cladelabels_fan.R")
+source("scripts/functions/RB2020_cladelabels_fan.R")
 RB2020_cladelabels_fan(offset = 1.015)
 
 # insert legend
@@ -239,8 +222,8 @@ ape::tiplabels(tip = as.numeric(rownames(wwvi_tips)), pie = wwvi_tips,
                piecol = cols, cex = 0.25)
 
 # label clades, orders and families
-source("scripts/RB2020_cladelabels.R")
-source("scripts/family_and_order_labels.R")
+source("scripts/functions/RB2020_cladelabels.R")
+source("scripts/functions/family_and_order_labels.R")
 RB2020_cladelabels(xpos = 300)
 order_labels(xpos = 250)
 family_labels(xpos = 205)
@@ -260,78 +243,20 @@ obj <- axis(1, pos = 0, at = seq(T, min.tick, by = -tick.spacing), cex.axis = 0.
 axis(side = 1, pos = 0, at = seq(T, min.tick, by = -tick.spacing), cex.axis = 0.5,
      labels = FALSE)
 text(obj, rep(-5, length(obj)), T - obj, cex = 0.6)
-text(mean(obj), -10 , "time (mybp)", cex = 0.8)
+text(mean(obj), -10 , "time (mya)", cex = 0.8)
 rm(T, tick.spacing, min.tick, obj)
 dev.off()
 rm(wwvi_tips, RB2020_cladelabels, order_labels, family_labels, cols)
 
 
-# density maps for each multisimmap - each one takes >10 minutes to build
+# density maps for each binary multisimmap - each one takes >10 minutes to build
 density_maps <- list()
-# abiotic and animal
-# to change colours in density map, first build density map as object TAKES AGES
-density_maps$abiotic_animal_ARD <- phytools::densityMap(simmaps$abiotic_animal_ARD, plot = FALSE)
 # wind and animal
 # to change colours in density map, first build density map as object TAKES AGES
 density_maps$wind_animal_ARD <- phytools::densityMap(simmaps$wind_animal_ARD, plot = FALSE)
 # vertebrate and insect
 # to change colours in density map, first build density map as object TAKES AGES
 density_maps$vert_insect_ARD <- phytools::densityMap(simmaps$vert_insect_ARD, plot = FALSE)
-
-# abiotic and animal #
-# check length of colours in density map
-n <- length(density_maps$abiotic_animal_ARD$cols)
-# assign new colours to density map (taken from phytools blog)
-density_maps$abiotic_animal_ARD$cols[1:n] <- colorRampPalette(c(my_colours$abiotic_animal[1], my_colours$abiotic_animal[2]), space="Lab")(n)
-
-# plot it and export to pdf
-pdf(file = "figures/densitymap_abiotic_animal_ARD_1000_tall.pdf", width = 12.6, height = 20, useDingbats = FALSE)
-
-# plot it tall
-plot(density_maps$abiotic_animal_ARD, ftype = "off", lwd = 4, xlim = c(-5, 245),
-     leg.txt = c("abiotic", "Pollination mode", "animal"), direction = "rightwards")
-
-# draw time axis 
-# adapted from http://blog.phytools.org/2018/02/another-technique-for-including-time.html
-T <- max(nodeHeights(tree))
-obj <- axis(1, pos = -2, at = seq(T, -10, by = -40), cex.axis = 3,
-            labels = FALSE, lwd = 2)
-axis(side = 1, pos = -2, at = seq(T, -10, by = -40), cex.axis = 3,
-     labels = FALSE, lwd = 2)
-text(x = obj, y = rep(-26, length(obj)), T - obj, cex = 2)
-text(x = mean(obj), y = -53, "time (mybp)", cex = 2.1)
-rm(T, obj)
-
-# label clades
-#ANA
-segments(x0 = 198, y0 = 1, x1 = 198, y1 = 12, lwd = 10, col = "#bdbdbd", lend = "butt")
-text(x = 198+5, y = 6.5, "ANA", srt = 0, cex = 2, col = "#bdbdbd", adj = 0)
-#Magnoliids
-segments(x0 = 198, y0 = 13, x1 = 198, y1 = 66, lwd = 10, col = "#636363", lend = "butt")
-text(x = 198+5, y = 39.5, "Magnoliids", srt = 0, cex = 2, col = "#636363", adj = 0)
-#Monocots
-segments(x0 = 198, y0 = 69, x1 = 198, y1 = 314, lwd = 10, col = "#bdbdbd", lend = "butt")
-text(x = 198+5, y = 191.5, "Monocots", srt = 0, cex = 2, col = "#bdbdbd", adj = 0)
-#Commelinids
-segments(x0 = 198+2, y0 = 209, x1 = 198+2, y1 = 314, lwd = 10, col = "#636363", lend = "butt")
-text(x = 198+5, y = 261.5, "Commelinids", srt = 0, cex = 2, col = "#636363", adj = 0)
-#Eudicots
-segments(x0 = 198, y0 = 317, x1 = 198, y1 = 1201, lwd = 10, col = "#636363", lend = "butt")
-text(x = 198+5, y = 759, "Eudicots", srt = 0, cex = 2, col = "#636363", adj = 0)
-#Rosids
-segments(x0 = 198+2, y0 = 390, x1 = 198+2, y1 = 712, lwd = 10, col = "#bdbdbd", lend = "butt")
-text(x = 198+5, y = 551, "Rosids", srt = 0, cex = 2, col = "#bdbdbd", adj = 0)
-#Asterids
-segments(x0 = 198+2, y0 = 845, x1 = 198+2, y1 = 1201, lwd = 10, col = "#bdbdbd", lend = "butt")
-text(x = 198+5, y = 1023, "Asterids", srt = 0, cex = 2, col = "#bdbdbd", adj = 0)
-#Chloranthales
-segments(x0 = 198, y0 = 67, x1 = 198, y1 = 68, lwd = 10, col = "black", lend = "butt")
-text(x = 198+5, y = 67.5, "Chloranthales", srt = 0, cex = 2, col = "black", adj = 0)
-#Ceratophyllales
-segments(x0 = 198, y0 = 315, x1 = 198, y1 = 316, lwd = 10, col = "black", lend = "butt")
-text(x = 198+5, y = 315.5, "Ceratophyllales", srt = 0, cex = 2, col = "black",  adj = 0)
-
-dev.off()
 
 # wind and animal
 # assign new colours to density map (taken from phytools blog)
@@ -350,7 +275,7 @@ obj <- axis(1, pos = -2, at = seq(T, -10, by = -40), cex.axis = 3,
 axis(side = 1, pos = -2, at = seq(T, -10, by = -40), cex.axis = 3,
      labels = FALSE, lwd = 2)
 text(x = obj, y = rep(-26, length(obj)), T - obj, cex = 2)
-text(x = mean(obj), y = -53, "time (mybp)", cex = 2.1)
+text(x = mean(obj), y = -53, "time (mya)", cex = 2.1)
 rm(T, obj)
 
 # label clades
@@ -398,7 +323,7 @@ obj <- axis(1, pos = -2, at = seq(T, -10, by = -40), cex.axis = 3,
 axis(side = 1, pos = -2, at = seq(T, -10, by = -40), cex.axis = 3,
      labels = FALSE, lwd = 2)
 text(x = obj, y = rep(-26, length(obj)), T - obj, cex = 2)
-text(x = mean(obj), y = -53, "time (mybp)", cex = 2.1)
+text(x = mean(obj), y = -53, "time (mya)", cex = 2.1)
 rm(T, obj)
 
 # label clades
@@ -527,7 +452,7 @@ rm(wwvi, min, max, ax, to_wind, to_water, to_insect, to_vert, simmap_description
 # plot time of transitions across simmaps
 
 # function to extract transition times from a tree
-source("scripts/transition_times.R")
+source("scripts/functions/transition_times.R")
 
 ### WIND ANIMAL ###
 # apply function across list of multiple simulations
@@ -573,7 +498,7 @@ animal_to_wind <- wa_transitions %>%
   dplyr::select(animal_to_wind, simulation = i)
 wb <- hist(wind_to_animal$wind_to_animal, breaks = ax, plot = FALSE)
 bw <- hist(animal_to_wind$animal_to_wind, breaks = ax, plot = FALSE)
-plot (bw, col = my_colours$wind_water_animal[1], xlab = "Time of transitions (mybp)",  
+plot (bw, col = my_colours$wind_water_animal[1], xlab = "Time of transitions (mya)",  
       main = "", ylab = "number of transitions across 1000 simulations", 
       ylim = c(0, 6000), xlim = c(200,0)) # alter if x values change!
 plot (wb, col = my_colours$wind_water_animal[3], add = TRUE)
@@ -587,7 +512,7 @@ density_wb <- density(wind_to_animal$wind_to_animal)
 density_bw <- density(animal_to_wind$animal_to_wind)
 # plot the density
 plot(density_wb, lwd = 2, col = my_colours$wind_water_animal[3], 
-     xlim = c(200,0), xlab = "Time of transitions (mybp)", bty = "l",
+     xlim = c(200,0), xlab = "Time of transitions (mya)", bty = "l",
      cex.lab = 1.4, cex.axis = 1.4, main = NULL, sub = NULL, title = NULL)
 lines(density_bw, lwd = 2, col = my_colours$wind_water_animal[1], xlim = c(200,0))
 # add data-points with noise in the X-axis
@@ -633,7 +558,7 @@ animal_to_wind <- wa_trans_cumul %>%
 plot(animal_to_wind$trans_no ~ animal_to_wind$time,
      type = "p", bty = "l", xlim = c(200,0), ylim = c(0,60),
      col = alpha(my_colours$wind_water_animal[1], 0.1), pch = 15,
-     xlab = "Time of transitions (mybp)", 
+     xlab = "Time of transitions (mya)", 
      ylab = "Cumulative number of transitions",
      cex.lab = 1.8, cex.axis = 1.8)
 
@@ -729,7 +654,7 @@ vert_to_insect <- vi_transitions %>%
   dplyr::select(vert_to_insect, simulation = i)
 wb <- hist(insect_to_vert$insect_to_vert, breaks = ax, plot = FALSE)
 bw <- hist(vert_to_insect$vert_to_insect, breaks = ax, plot = FALSE)
-plot (bw, col = my_colours$abiotic_vert_insect[2], xlab = "Time of transitions (mybp)",  
+plot (bw, col = my_colours$abiotic_vert_insect[2], xlab = "Time of transitions (mya)",  
       main = "", ylab = "number of transitions across 1000 simulations", 
       ylim = c(0, 8000), xlim = c(200,0)) # alter if x values change!
 plot (wb, col = my_colours$abiotic_vert_insect[3], add = TRUE)
@@ -743,7 +668,7 @@ density_vi <- density(vert_to_insect$vert_to_insect)
 density_iv <- density(insect_to_vert$insect_to_vert)
 # plot the density
 plot(density_vi, lwd = 2, col = my_colours$abiotic_vert_insect[2], 
-     xlim = c(200,0), xlab = "Time of transitions (mybp)", bty = "l",
+     xlim = c(200,0), xlab = "Time of transitions (mya)", bty = "l",
      cex.lab = 1.4, cex.axis = 1.4, main = NULL, sub = NULL, title = NULL)
 lines(density_iv, lwd = 2, col = my_colours$abiotic_vert_insect[3], xlim = c(200,0))
 # add data-points with noise in the X-axis
@@ -790,7 +715,7 @@ vert_to_insect <- vi_trans_cumul %>%
 plot(vert_to_insect$trans_no ~ vert_to_insect$time,
      type = "p", bty = "l", xlim = c(200,0), ylim = c(0,65),
      col = alpha(my_colours$abiotic_vert_insect[2], 0.1), pch = 17,
-     xlab = "Time of transitions (mybp)", 
+     xlab = "Time of transitions (mya)", 
      ylab = "Cumulative number of transitions",
      cex.lab = 1.8, cex.axis = 1.8)
 
