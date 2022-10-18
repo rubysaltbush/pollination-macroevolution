@@ -72,6 +72,7 @@ ASR <- cache_RDS("results/ASR.rds", function(){
   end_time <- Sys.time()
   end_time - start_time
   # time elapsed = 3.911384 hours
+  rm(start_time, end_time)
   
   # output printout of different models to text file
   sink(file = "results/ASR_descriptions.txt")
@@ -160,7 +161,10 @@ ASR <- cache_RDS("results/ASR.rds", function(){
   saveRDS(ASR, file = "results/ASR.rds")
 })
 
+
 # for stochastic mapping run ASR for binary states with tree tips dropped
+
+ASR_forsimmap <- cache_RDS("results/ASR_forsimmap.rds", function(){
 # drop tips of tree where binary characters missing
 tree_wind_animal <- ape::drop.tip(tree, pollination1209$taxon_name[pollination1209$wind_animal == "?"])
 tree_vert_insect <- ape::drop.tip(tree, pollination1209$taxon_name[pollination1209$vert_insect == "?"])
@@ -209,8 +213,10 @@ ASR_forsimmap$vert_insect_ER <- corHMM::corHMM(tree_vert_insect,
 # select most supported model from ER or ARD for stochastic mapping?
 ASR_forsimmap$wind_animal_ARD
 ASR_forsimmap$wind_animal_ER
+# <2 (i.e. no) difference in AICc, ARD transition rate from wind to animal higher
 ASR_forsimmap$vert_insect_ARD
 ASR_forsimmap$vert_insect_ER
+# 24 difference in AICc, ARD lower. Transition rate from vert to insect higher
 
 # output printout of different models to text file
 sink(file = "results/ASR_forsimmap_descriptions.txt")
@@ -224,8 +230,28 @@ for(name in names(ASR_forsimmap)){
 sink(file = NULL)
 rm(name)
 
+# export ASR_forsimmap results by loop, export csv of states, rates and AIC
+ASR_forsimmap_results <- data.frame()
+for (name in names(ASR_forsimmap)){
+  # export states as csv
+  write.csv(x = ASR_forsimmap[[name]]$states, 
+            file = paste("results/ASR/", name, "_states.csv", sep = ""))
+  # export rates as csv
+  write.csv(x = ASR_forsimmap[[name]]$solution,
+            file = paste("results/ASR/", name, "_rates.csv", sep = ""))
+  # assemble model fit data into df to export later
+  results_row <- data.frame(model = paste(name, sep = ""), 
+                            loglik = ASR_forsimmap[[name]]$loglik,
+                            AIC = ASR_forsimmap[[name]]$AIC,
+                            AICc = ASR_forsimmap[[name]]$AICc,
+                            root_prior = ASR_forsimmap[[name]]$root.p)
+  ASR_forsimmap_results <- rbind(ASR_forsimmap_results, results_row)
+}
 
+readr::write_csv(ASR_forsimmap_results, "results/ASR_forsimmap_results.csv")
+rm(name, results_row, matrices, ASR_forsimmap_results)
 
-# and assign previous abiotic_animal ASR to this list
-ASR_forsimmap$abiotic_animal_ARD <- ASR$abiotic_animal_ARD
+# and output Rds so can cache these ASRs
+saveRDS(ASR_forsimmap, file = "results/ASR_forsimmap.rds")
+})
 
