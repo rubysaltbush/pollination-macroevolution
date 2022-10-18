@@ -71,7 +71,7 @@ ASR <- cache_RDS("results/ASR.rds", function(){
   rm(ASR_ARD)
   end_time <- Sys.time()
   end_time - start_time
-  # time elapsed = 
+  # time elapsed = 3.911384 hours
   
   # output printout of different models to text file
   sink(file = "results/ASR_descriptions.txt")
@@ -88,11 +88,12 @@ ASR <- cache_RDS("results/ASR.rds", function(){
   # look at results
   ASR$abiotic_animal_ER
   head(ASR$abiotic_animal_ER$states)
+  # ancestral state animal
   # look at results
   ASR$abiotic_animal_ARD
   head(ASR$abiotic_animal_ARD$states)
-  # with all rates different it looks like transition rates from abiotic to animal
-  # are slightly higher, AICc slightly higher too though
+  # with all rates different transition rates from abiotic to animal
+  # are slightly higher, AICc slightly higher than ER but <2
   
   # look at results
   ASR$abiotic_animal_nopoly_ER
@@ -100,8 +101,7 @@ ASR <- cache_RDS("results/ASR.rds", function(){
   # look at results
   ASR$abiotic_animal_nopoly_ARD
   head(ASR$abiotic_animal_nopoly_ARD$states)
-  # ARD has lower AICc, suggests that polymorphic state is more 
-  # frequently transitional for animal->wind pollination? 
+  # ARD has lower AICc, ancestral state animal
   
   # look at results
   ASR$wind_water_animal_ER
@@ -140,10 +140,10 @@ ASR <- cache_RDS("results/ASR.rds", function(){
   for (name in names(ASR)){
     # export states as csv
     write.csv(x = ASR[[name]]$states, 
-              file = paste("results/", name, "_states.csv", sep = ""))
+              file = paste("results/ASR/", name, "_states.csv", sep = ""))
     # export rates as csv
     write.csv(x = ASR[[name]]$solution,
-              file = paste("results/", name, "_rates.csv", sep = ""))
+              file = paste("results/ASR/", name, "_rates.csv", sep = ""))
     # assemble model fit data into df to export later
     results_row <- data.frame(model = paste(name, sep = ""), 
                               loglik = ASR[[name]]$loglik,
@@ -159,3 +159,73 @@ ASR <- cache_RDS("results/ASR.rds", function(){
   # save RDS of model output so I don't have to re-run these all the time!
   saveRDS(ASR, file = "results/ASR.rds")
 })
+
+# for stochastic mapping run ASR for binary states with tree tips dropped
+# drop tips of tree where binary characters missing
+tree_wind_animal <- ape::drop.tip(tree, pollination1209$taxon_name[pollination1209$wind_animal == "?"])
+tree_vert_insect <- ape::drop.tip(tree, pollination1209$taxon_name[pollination1209$vert_insect == "?"])
+# this also drops tips where pollination mode unknown
+
+# prepare matrices with extra character states dropped
+matrices <- list()
+
+matrices$wind_animal <- pollination1209 %>%
+  dplyr::select(taxon_name, value = wind_animal) %>%
+  dplyr::filter(value != "?") %>%
+  as.matrix()
+
+matrices$vert_insect <- pollination1209 %>%
+  dplyr::select(taxon_name, value = vert_insect) %>%
+  dplyr::filter(value != "?") %>%
+  as.matrix()
+
+# run ARD and ER ASR for these two binary categorisations using modified trees
+ASR_forsimmap <- list()
+ASR_forsimmap$wind_animal_ARD <- corHMM::corHMM(tree_wind_animal, 
+                                                matrices$wind_animal, 
+                                                model = "ARD", 
+                                                rate.cat = 1, 
+                                                nstarts = 10,
+                                                n.cores = no_cores)
+ASR_forsimmap$wind_animal_ER <- corHMM::corHMM(tree_wind_animal, 
+                                                matrices$wind_animal, 
+                                                model = "ER", 
+                                                rate.cat = 1, 
+                                                nstarts = 10,
+                                                n.cores = no_cores)
+ASR_forsimmap$vert_insect_ARD <- corHMM::corHMM(tree_vert_insect, 
+                                                matrices$vert_insect, 
+                                                model = "ARD", 
+                                                rate.cat = 1, 
+                                                nstarts = 10,
+                                                n.cores = no_cores)
+ASR_forsimmap$vert_insect_ER <- corHMM::corHMM(tree_vert_insect, 
+                                                matrices$vert_insect, 
+                                                model = "ER", 
+                                                rate.cat = 1, 
+                                                nstarts = 10,
+                                                n.cores = no_cores)
+
+# select most supported model from ER or ARD for stochastic mapping?
+ASR_forsimmap$wind_animal_ARD
+ASR_forsimmap$wind_animal_ER
+ASR_forsimmap$vert_insect_ARD
+ASR_forsimmap$vert_insect_ER
+
+# output printout of different models to text file
+sink(file = "results/ASR_forsimmap_descriptions.txt")
+for(name in names(ASR_forsimmap)){
+  print(paste(name))
+  print(ASR_forsimmap[[name]])
+  print(paste("states"))
+  print(head(ASR_forsimmap[[name]]$states))
+  print(paste(" "))
+}
+sink(file = NULL)
+rm(name)
+
+
+
+# and assign previous abiotic_animal ASR to this list
+ASR_forsimmap$abiotic_animal_ARD <- ASR$abiotic_animal_ARD
+

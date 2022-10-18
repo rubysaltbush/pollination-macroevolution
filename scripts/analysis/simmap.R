@@ -4,42 +4,7 @@
 
 # TO DO - export NICE simmaps with time and clades labelled
 
-# re-run ASRs for binary states with tree tips dropped
-# drop tips of tree where binary characters missing
-tree_wind_animal <- ape::drop.tip(tree, pollination1209$taxon_name[pollination1209$wind_animal == "?"])
-tree_vert_insect <- ape::drop.tip(tree, pollination1209$taxon_name[pollination1209$vert_insect == "?"])
-# this also drops tips where pollination mode unknown
 
-# prepare matrices with extra character states dropped
-matrices <- list()
-
-matrices$wind_animal <- pollination1209 %>%
-  dplyr::select(taxon_name, value = wind_animal) %>%
-  dplyr::filter(value != "?") %>%
-  as.matrix()
-
-matrices$vert_insect <- pollination1209 %>%
-  dplyr::select(taxon_name, value = vert_insect) %>%
-  dplyr::filter(value != "?") %>%
-  as.matrix()
-
-# now run quick ASR for these two using modified trees, just ARD models
-ASR_forsimmap <- list()
-ASR_forsimmap$wind_animal_ARD <- corHMM::corHMM(tree_wind_animal, 
-                                                matrices$wind_animal, 
-                                                model = "ARD", 
-                                                rate.cat = 1, 
-                                                nstarts = 10,
-                                                n.cores = no_cores)
-ASR_forsimmap$vert_insect_ARD <- corHMM::corHMM(tree_vert_insect, 
-                                                matrices$vert_insect, 
-                                                model = "ARD", 
-                                                rate.cat = 1, 
-                                                nstarts = 10,
-                                                n.cores = no_cores)
-
-# and assign previous abiotic_animal ASR to this list
-ASR_forsimmap$abiotic_animal_ARD <- ASR$abiotic_animal_ARD
 
 #### run simmap analyses ####
 
