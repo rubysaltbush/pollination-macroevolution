@@ -31,7 +31,7 @@ rm(cl)
 source("scripts/pollination1209.R")
 
 # run corHMM Ancestral State Reconstructions of pollination mode in angiosperms
-# takes ~2 hours to run if not already cached
+# takes ~4 hours to run if not already cached
 source("scripts/analysis/ASR.R")
 
 # for graphs assign fixed colours

@@ -2,8 +2,6 @@
 
 #### prepare data ####
 
-# TO DO - export NICE simmaps with time and clades labelled
-
 # drop tips of tree where binary characters missing
 tree_wind_animal <- ape::drop.tip(tree, pollination1209$taxon_name[pollination1209$wind_animal == "?"])
 tree_vert_insect <- ape::drop.tip(tree, pollination1209$taxon_name[pollination1209$vert_insect == "?"])
@@ -12,7 +10,10 @@ tree_vert_insect <- ape::drop.tip(tree, pollination1209$taxon_name[pollination12
 ASR_forsimmap <- ASR_forsimmap[-c(2,4)]
 
 # and add full 4 state model to list
-ASR_forsimmap$wind_water_vert_insect_ARD <- ASR$wind_water_vert_insect_ARD
+ASR_forsimmap$wind_water_vert_insect_ARD <- ASR_forsimmap$wind_water_vert_insect_ARD
+
+# remove other ASR, not needed now
+rm(ASR)
 
 #### run simmap analyses ####
 
@@ -95,7 +96,7 @@ pdf(file="figures/corHMM_ARD_wind_water_vert_insect_circular.pdf",
 
 # first prep tip labels for polymorphic tips
 # wind, water, vert and insect tips
-wwvi_tips <- as.data.frame(ASR$wind_water_vert_insect_ARD$tip.states) %>%
+wwvi_tips <- as.data.frame(ASR_forsimmap$wind_water_vert_insect_ARD$tip.states) %>%
   dplyr::mutate(statesum = dplyr::select(. , V1:V4) %>% rowSums) %>%
   dplyr::mutate(tip_num = 1:nrow(.)) %>% # add number to match tip number in tree
   dplyr::filter(statesum < 4) %>% # filter out taxa with missing tip data
@@ -170,7 +171,7 @@ phytools::plotSimmap(simmaps$wind_water_vert_insect_ARD[1],
 
 # plot nodes to of MRCA of all orders with pollination state pie from ASR
 ape::nodelabels(node = for_nodes$MRCAn,
-                pie = ASR$wind_water_vert_insect_ARD$states[for_nodes$MRCAn-1201,], 
+                pie = ASR_forsimmap$wind_water_vert_insect_ARD$states[for_nodes$MRCAn-1201,], 
                 piecol = my_colours$wind_water_vert_insect, cex = 0.5)
 # plot tip labels with pie charts for polymorphies
 names(cols) <- c("V1", "V2", "V3", "V4")
@@ -213,7 +214,7 @@ phytools::plotSimmap(simmaps$wind_water_vert_insect_ARD[1],
                      ftype = "off", xlim = c(0, 310))
 
 # plot all nodes with pie charts from ASR
-ape::nodelabels(pie = ASR$wind_water_vert_insect_ARD$states, 
+ape::nodelabels(pie = ASR_forsimmap$wind_water_vert_insect_ARD$states, 
                 piecol = my_colours$wind_water_vert_insect, cex = 0.5)
 
 # plot tip labels with pie charts for polymorphies
@@ -358,23 +359,6 @@ rm(n)
 rm(tree_vert_insect, tree_wind_animal, density_maps)
 
 # Jakub's method to make histogram of # of transitions from simmapping
-# abiotic and animal
-pdf("figures/abiotic_animal_ARD_1000_transitions.pdf", height = 5, width = 5)
-bab <- simmap_descriptions$abiotic_animal_ARD$count[,2:3]
-min <- min (bab)
-max <- max (bab)
-ax <- pretty(min:max, n = 20)
-ba <- hist(bab[,1], breaks = ax, plot = FALSE)
-ab <- hist(bab[,2], breaks = ax, plot = FALSE)
-plot (ba, col = my_colours$abiotic_animal[2], 
-      xlim = c(0,60), ylim = c(0,400), 
-      xlab = "total number of transitions",  main = "", 
-      ylab = "frequency across 1000 simulations")
-plot (ab, col = my_colours$abiotic_animal[1], add = TRUE)
-dev.off()
-rm(bab, min, max, ax, ab, ba)
-
-# TO DO - add legend to histograms
 
 # wind and animal
 pdf("figures/wind_animal_ARD_1000_transitions.pdf", height = 5, width = 5)
@@ -414,8 +398,8 @@ legend("topleft", legend = c("insect to vertebrate", "vertebrate to insect"),
 dev.off()
 rm(ivi, min, max, ax, iv, vi)
 
-# wind, water, vert, insect BUT 12 columns is this sensible?
-# could maybe pool so that displayed is just transitions TO 1 of 4 states?
+# wind, water, vert, insect
+# pooled so that displays transitions TO 4 states (not from)
 pdf("figures/wwvi_ARD_1000_transitions.pdf", height = 5, width = 5)
 wwvi <- data.frame(simmap_descriptions$wind_water_vert_insect_ARD$count[,2:13]) # get # of state changes
 wwvi$to_wind <- wwvi[,4] + wwvi[,7] + wwvi[,10]
@@ -441,11 +425,10 @@ plot (to_vert, col = alpha(my_colours$wind_water_vert_insect[4], 0.7),
 plot (to_insect, col = alpha(my_colours$wind_water_vert_insect[3], 0.7), 
       add = TRUE)
 # insert legend
-legend("topright", legend = names(my_colours$wind_water_vert_insect), 
+legend("topright", legend = c("to wind", "to water", "to insect", "to vertebrate"), 
        fill = my_colours$wind_water_vert_insect, pt.lwd = 0.001, bty = "n")
 dev.off()
 rm(wwvi, min, max, ax, to_wind, to_water, to_insect, to_vert, simmap_descriptions)
-# doesn't look brilliant, hard to visualise this model really
 
 #### time of transitions ####
 
@@ -481,7 +464,7 @@ rm(n, trans)
 wa_trans_cumul$transition <- gsub("2->4", "wind to animal", wa_trans_cumul$transition)
 wa_trans_cumul$transition <- gsub("4->2", "animal to wind", wa_trans_cumul$transition)
 
-# plot with plain R plotting
+## figures ##
 
 # histogram of wind and animal pollination transition timing
 pdf("figures/wind_animal_transition_times.pdf", height = 5, width = 5)
