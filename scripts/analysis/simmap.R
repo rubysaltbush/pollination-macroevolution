@@ -10,7 +10,7 @@ tree_vert_insect <- ape::drop.tip(tree, pollination1209$taxon_name[pollination12
 ASR_forsimmap <- ASR_forsimmap[-c(2,4)]
 
 # and add full 4 state model to list
-ASR_forsimmap$wind_water_vert_insect_ARD <- ASR_forsimmap$wind_water_vert_insect_ARD
+ASR_forsimmap$wind_water_vert_insect_ARD <- ASR$wind_water_vert_insect_ARD
 
 # remove other ASR, not needed now
 rm(ASR)
