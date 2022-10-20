@@ -464,46 +464,6 @@ rm(n, trans)
 wa_trans_cumul$transition <- gsub("2->4", "wind to animal", wa_trans_cumul$transition)
 wa_trans_cumul$transition <- gsub("4->2", "animal to wind", wa_trans_cumul$transition)
 
-## figures ##
-
-# histogram of wind and animal pollination transition timing
-pdf("figures/wind_animal_transition_times.pdf", height = 5, width = 5)
-min <- min(wa_transitions$time)
-max <- max(wa_transitions$time)
-ax <- pretty(min:max, n = 20)
-wind_to_animal <- wa_transitions %>%
-  dplyr::filter(transition == "2->4") %>%
-  dplyr::mutate(wind_to_animal = time) %>%
-  dplyr::select(wind_to_animal, simulation = i)
-animal_to_wind <- wa_transitions %>%
-  dplyr::filter(transition == "4->2") %>%
-  dplyr::mutate(animal_to_wind = time) %>%
-  dplyr::select(animal_to_wind, simulation = i)
-wb <- hist(wind_to_animal$wind_to_animal, breaks = ax, plot = FALSE)
-bw <- hist(animal_to_wind$animal_to_wind, breaks = ax, plot = FALSE)
-plot (bw, col = my_colours$wind_water_animal[1], xlab = "Time of transitions (mya)",  
-      main = "", ylab = "number of transitions across 1000 simulations", 
-      ylim = c(0, 6000), xlim = c(200,0)) # alter if x values change!
-plot (wb, col = my_colours$wind_water_animal[3], add = TRUE)
-dev.off()
-rm(min, max, ax, wb, bw)
-
-# density plot of transitions from wind to animal pollination and back
-pdf("figures/density_windanimal.pdf", height = 3, width = 6)
-# calculate density curve
-density_wb <- density(wind_to_animal$wind_to_animal)
-density_bw <- density(animal_to_wind$animal_to_wind)
-# plot the density
-plot(density_wb, lwd = 2, col = my_colours$wind_water_animal[3], 
-     xlim = c(200,0), xlab = "Time of transitions (mya)", bty = "l",
-     cex.lab = 1.4, cex.axis = 1.4, main = NULL, sub = NULL, title = NULL)
-lines(density_bw, lwd = 2, col = my_colours$wind_water_animal[1], xlim = c(200,0))
-# add data-points with noise in the X-axis
-rug(jitter(animal_to_wind$animal_to_wind), col = alpha(my_colours$wind_water_animal[1], 0.5))
-rug(jitter(wind_to_animal$wind_to_animal), col = alpha(my_colours$wind_water_animal[3], 0.5))
-dev.off()
-rm(density_wb, density_bw, wind_to_animal, animal_to_wind)
-
 # TAKE AVERAGE OF ALL TRANSITION TIMES so this can be graphed
 
 # first need to know average number of transitions, rounded
@@ -529,7 +489,58 @@ avg_trans_times <- wa_trans_cumul %>%
 # export these results to csv in case I need them
 readr::write_csv(avg_trans_times, "results/mean_transition_times_wind_animal.csv")
 
-# graph all together (lines and their average)
+## figures ##
+
+# histogram of wind and animal pollination transition timing
+pdf("figures/wind_animal_transition_times_mean_hist.pdf", height = 3, width = 5)
+min <- min(avg_trans_times$avg_time)
+max <- max(avg_trans_times$avg_time)
+ax <- pretty(min:max, n = 20)
+wind_to_animal <- avg_trans_times %>%
+  dplyr::ungroup() %>%
+  dplyr::filter(transition == "wind to animal") %>%
+  dplyr::mutate(wind_to_animal = avg_time) %>%
+  dplyr::select(wind_to_animal)
+animal_to_wind <- avg_trans_times %>%
+  dplyr::ungroup() %>%
+  dplyr::filter(transition == "animal to wind") %>%
+  dplyr::mutate(animal_to_wind = avg_time) %>%
+  dplyr::select(animal_to_wind)
+wb <- hist(wind_to_animal$wind_to_animal, breaks = ax, plot = FALSE)
+bw <- hist(animal_to_wind$animal_to_wind, breaks = ax, plot = FALSE)
+plot (bw, col = my_colours$wind_water_animal[1], xlab = "time of transitions (mya)",  
+      main = "", ylab = "number of transitions", 
+      ylim = c(0, 6), xlim = c(200,0)) # alter if x values change!
+plot (wb, col = alpha(my_colours$wind_water_animal[3], 0.9), add = TRUE)
+dev.off()
+rm(min, max, ax, wb, bw, wind_to_animal, animal_to_wind)
+
+# density plot of transitions from wind to animal pollination and back
+pdf("figures/density_windanimal.pdf", height = 3, width = 6)
+# data for density graph
+wind_to_animal <- wa_transitions %>%
+  dplyr::filter(transition == "2->4") %>%
+  dplyr::mutate(wind_to_animal = time) %>%
+  dplyr::select(wind_to_animal, simulation = i)
+animal_to_wind <- wa_transitions %>%
+  dplyr::filter(transition == "4->2") %>%
+  dplyr::mutate(animal_to_wind = time) %>%
+  dplyr::select(animal_to_wind, simulation = i)
+# calculate density curve
+density_wb <- density(wind_to_animal$wind_to_animal)
+density_bw <- density(animal_to_wind$animal_to_wind)
+# plot the density
+plot(density_wb, lwd = 2, col = my_colours$wind_water_animal[3], 
+     xlim = c(200,0), xlab = "Time of transitions (mya)", bty = "l",
+     cex.lab = 1.4, cex.axis = 1.4, main = NULL, sub = NULL, title = NULL)
+lines(density_bw, lwd = 2, col = my_colours$wind_water_animal[1], xlim = c(200,0))
+# add data-points with noise in the X-axis
+rug(jitter(animal_to_wind$animal_to_wind), col = alpha(my_colours$wind_water_animal[1], 0.5))
+rug(jitter(wind_to_animal$wind_to_animal), col = alpha(my_colours$wind_water_animal[3], 0.5))
+dev.off()
+rm(density_wb, density_bw, wind_to_animal, animal_to_wind)
+
+# graph times all together (lines and their average)
 pdf("figures/wind_animal_transitions_plus_mean.pdf", height = 8, width = 10)
 
 par(mar = c(5.1, 5.1, 4.1, 2.1))    # increase margins
@@ -567,7 +578,7 @@ for(n in 1:500){
         col = alpha(my_colours$wind_water_animal[3], 0.5))
 }
 
-# then add average points and line in RED
+# then add average points and line in blue
 # first prep data
 wind_to_animal <- avg_trans_times %>%
   dplyr::filter(transition == "wind to animal") %>%
@@ -577,13 +588,13 @@ animal_to_wind <- avg_trans_times %>%
   dplyr::filter(trans_no <= trans_avg_length[2,2])
 # then add to plot
 points(animal_to_wind$trans_no ~ animal_to_wind$avg_time,
-     col = "red", pch = 15)
+     col = "blue", pch = 15)
 lines(animal_to_wind$trans_no ~ animal_to_wind$avg_time, 
-      col = "red")
+      col = "blue")
 points(wind_to_animal$trans_no ~ wind_to_animal$avg_time,
-       col = "red", pch = 17)
+       col = "blue", pch = 17)
 lines(wind_to_animal$trans_no ~ wind_to_animal$avg_time, 
-      col = "red")
+      col = "blue")
 # add legend
 legend("topleft",
        legend = c("animal to wind", "wind to animal"),
@@ -620,47 +631,6 @@ rm(n, trans)
 vi_trans_cumul$transition <- gsub("5->6", "insect to vertebrate", vi_trans_cumul$transition)
 vi_trans_cumul$transition <- gsub("6->5", "vertebrate to insect", vi_trans_cumul$transition)
 
-# plot with plain R plotting
-
-# histogram of wind and animal pollination transition timing
-pdf("figures/vert_insect_transition_times.pdf", height = 5, width = 5)
-min <- min(vi_transitions$time)
-max <- max(vi_transitions$time)
-ax <- pretty(min:max, n = 20)
-insect_to_vert <- vi_transitions %>%
-  dplyr::filter(transition == "5->6") %>%
-  dplyr::mutate(insect_to_vert = time) %>%
-  dplyr::select(insect_to_vert, simulation = i)
-vert_to_insect <- vi_transitions %>%
-  dplyr::filter(transition == "6->5") %>%
-  dplyr::mutate(vert_to_insect = time) %>%
-  dplyr::select(vert_to_insect, simulation = i)
-wb <- hist(insect_to_vert$insect_to_vert, breaks = ax, plot = FALSE)
-bw <- hist(vert_to_insect$vert_to_insect, breaks = ax, plot = FALSE)
-plot (bw, col = my_colours$abiotic_vert_insect[2], xlab = "Time of transitions (mya)",  
-      main = "", ylab = "number of transitions across 1000 simulations", 
-      ylim = c(0, 8000), xlim = c(200,0)) # alter if x values change!
-plot (wb, col = my_colours$abiotic_vert_insect[3], add = TRUE)
-dev.off()
-rm(min, max, ax, wb, bw)
-
-# density plot of transitions from insect to vert pollination and back
-pdf("figures/density_vertinsect.pdf", height = 3, width = 6)
-# calculate density curve
-density_vi <- density(vert_to_insect$vert_to_insect)
-density_iv <- density(insect_to_vert$insect_to_vert)
-# plot the density
-plot(density_vi, lwd = 2, col = my_colours$abiotic_vert_insect[2], 
-     xlim = c(200,0), xlab = "Time of transitions (mya)", bty = "l",
-     cex.lab = 1.4, cex.axis = 1.4, main = NULL, sub = NULL, title = NULL)
-lines(density_iv, lwd = 2, col = my_colours$abiotic_vert_insect[3], xlim = c(200,0))
-# add data-points with noise in the X-axis
-rug(jitter(insect_to_vert$insect_to_vert), col = alpha(my_colours$abiotic_vert_insect[3], 0.5))
-rug(jitter(vert_to_insect$vert_to_insect), col = alpha(my_colours$abiotic_vert_insect[2], 0.5))
-dev.off()
-rm(density_vi, density_iv, insect_to_vert, vert_to_insect)
-
-
 # TAKE AVERAGE OF ALL TRANSITION TIMES so this can be graphed
 
 # first need to know average number of transitions, rounded
@@ -685,6 +655,57 @@ avg_trans_times <- vi_trans_cumul %>%
 
 # export these results to csv in case I need them
 readr::write_csv(avg_trans_times, "results/mean_transition_times_vert_insect.csv")
+
+## time figures ##
+
+# histogram of wind and animal pollination transition timing average
+pdf("figures/vert_insect_transition_times_mean_hist.pdf", height = 3, width = 5)
+min <- min(avg_trans_times$avg_time)
+max <- max(avg_trans_times$avg_time)
+ax <- pretty(min:max, n = 20)
+insect_to_vert <- avg_trans_times %>%
+  dplyr::ungroup() %>%
+  dplyr::filter(transition == "insect to vertebrate") %>%
+  dplyr::mutate(insect_to_vert = avg_time) %>%
+  dplyr::select(insect_to_vert)
+vert_to_insect <- avg_trans_times %>%
+  dplyr::ungroup() %>%
+  dplyr::filter(transition == "vertebrate to insect") %>%
+  dplyr::mutate(vert_to_insect = avg_time) %>%
+  dplyr::select(vert_to_insect)
+wb <- hist(insect_to_vert$insect_to_vert, breaks = ax, plot = FALSE)
+bw <- hist(vert_to_insect$vert_to_insect, breaks = ax, plot = FALSE)
+plot (bw, col = my_colours$abiotic_vert_insect[2], xlab = "Time of transitions (mya)",  
+      main = "", ylab = "number of transitions", 
+      ylim = c(0, 12), xlim = c(200,0)) # alter if x values change!
+plot (wb, col = alpha(my_colours$abiotic_vert_insect[3], 0.8), add = TRUE)
+dev.off()
+rm(min, max, ax, wb, bw, insect_to_vert, vert_to_insect)
+
+# density plot of transitions from insect to vert pollination and back
+pdf("figures/density_vertinsect.pdf", height = 3, width = 6)
+# prep data for figure
+insect_to_vert <- vi_transitions %>%
+  dplyr::filter(transition == "5->6") %>%
+  dplyr::mutate(insect_to_vert = time) %>%
+  dplyr::select(insect_to_vert, simulation = i)
+vert_to_insect <- vi_transitions %>%
+  dplyr::filter(transition == "6->5") %>%
+  dplyr::mutate(vert_to_insect = time) %>%
+  dplyr::select(vert_to_insect, simulation = i)
+# calculate density curve
+density_vi <- density(vert_to_insect$vert_to_insect)
+density_iv <- density(insect_to_vert$insect_to_vert)
+# plot the density
+plot(density_vi, lwd = 2, col = my_colours$abiotic_vert_insect[2], 
+     xlim = c(200,0), xlab = "Time of transitions (mya)", bty = "l",
+     cex.lab = 1.4, cex.axis = 1.4, main = NULL, sub = NULL, title = NULL)
+lines(density_iv, lwd = 2, col = my_colours$abiotic_vert_insect[3], xlim = c(200,0))
+# add data-points with noise in the X-axis
+rug(jitter(insect_to_vert$insect_to_vert), col = alpha(my_colours$abiotic_vert_insect[3], 0.5))
+rug(jitter(vert_to_insect$vert_to_insect), col = alpha(my_colours$abiotic_vert_insect[2], 0.5))
+dev.off()
+rm(density_vi, density_iv, insect_to_vert, vert_to_insect)
 
 # graph all together (lines and their average)
 pdf("figures/vert_insect_transitions_plus_mean.pdf", height = 8, width = 10)
@@ -724,7 +745,7 @@ for(n in 1:500){
         col = alpha(my_colours$abiotic_vert_insect[3], 0.5))
 }
 
-# then add average points and line in RED
+# then add average points and line in blue
 # first prep data
 insect_to_vert <- avg_trans_times %>%
   dplyr::filter(transition == "insect to vertebrate") %>%
@@ -734,13 +755,13 @@ vert_to_insect <- avg_trans_times %>%
   dplyr::filter(trans_no <= trans_avg_length[2,2])
 # then add to plot
 points(vert_to_insect$trans_no ~ vert_to_insect$avg_time,
-       col = "red", pch = 17)
+       col = "blue", pch = 17)
 lines(vert_to_insect$trans_no ~ vert_to_insect$avg_time, 
-      col = "red")
+      col = "blue")
 points(insect_to_vert$trans_no ~ insect_to_vert$avg_time,
-       col = "red", pch = 15)
+       col = "blue", pch = 15)
 lines(insect_to_vert$trans_no ~ insect_to_vert$avg_time, 
-      col = "red")
+      col = "blue")
 # add legend
 legend("topleft",
        legend = c("insect to vertebrate", "vertebrate to insect"),
@@ -751,4 +772,4 @@ rm(n, test, vert_to_insect, insect_to_vert)
 
 rm(transition_times, vi_trans_cumul, trans_avg_length, avg_trans_times, vi_transitions)
 
-
+rm(simmaps, ASR_forsimmap)
