@@ -492,19 +492,21 @@ readr::write_csv(avg_trans_times, "results/mean_transition_times_wind_animal.csv
 ## figures ##
 
 # histogram of wind and animal pollination transition timing
-pdf("figures/wind_animal_transition_times_mean_hist.pdf", height = 3, width = 5)
+pdf("figures/wind_animal_transition_times_mean_hist.pdf", height = 2.8, width = 6)
 min <- min(avg_trans_times$avg_time)
 max <- max(avg_trans_times$avg_time)
 ax <- pretty(min:max, n = 20)
 wind_to_animal <- avg_trans_times %>%
-  dplyr::ungroup() %>%
   dplyr::filter(transition == "wind to animal") %>%
+  dplyr::filter(trans_no <= trans_avg_length[1,2]) %>%
   dplyr::mutate(wind_to_animal = avg_time) %>%
+  dplyr::ungroup() %>%
   dplyr::select(wind_to_animal)
 animal_to_wind <- avg_trans_times %>%
-  dplyr::ungroup() %>%
   dplyr::filter(transition == "animal to wind") %>%
+  dplyr::filter(trans_no <= trans_avg_length[2,2]) %>%
   dplyr::mutate(animal_to_wind = avg_time) %>%
+  dplyr::ungroup() %>%
   dplyr::select(animal_to_wind)
 wb <- hist(wind_to_animal$wind_to_animal, breaks = ax, plot = FALSE)
 bw <- hist(animal_to_wind$animal_to_wind, breaks = ax, plot = FALSE)
@@ -659,25 +661,27 @@ readr::write_csv(avg_trans_times, "results/mean_transition_times_vert_insect.csv
 ## time figures ##
 
 # histogram of wind and animal pollination transition timing average
-pdf("figures/vert_insect_transition_times_mean_hist.pdf", height = 3, width = 5)
+pdf("figures/vert_insect_transition_times_mean_hist.pdf", height = 2.8, width = 6)
 min <- min(avg_trans_times$avg_time)
 max <- max(avg_trans_times$avg_time)
 ax <- pretty(min:max, n = 20)
 insect_to_vert <- avg_trans_times %>%
-  dplyr::ungroup() %>%
   dplyr::filter(transition == "insect to vertebrate") %>%
+  dplyr::filter(trans_no <= trans_avg_length[1,2]) %>%
   dplyr::mutate(insect_to_vert = avg_time) %>%
+  dplyr::ungroup() %>%
   dplyr::select(insect_to_vert)
 vert_to_insect <- avg_trans_times %>%
-  dplyr::ungroup() %>%
   dplyr::filter(transition == "vertebrate to insect") %>%
+  dplyr::filter(trans_no <= trans_avg_length[2,2]) %>%
   dplyr::mutate(vert_to_insect = avg_time) %>%
+  dplyr::ungroup() %>%
   dplyr::select(vert_to_insect)
 wb <- hist(insect_to_vert$insect_to_vert, breaks = ax, plot = FALSE)
 bw <- hist(vert_to_insect$vert_to_insect, breaks = ax, plot = FALSE)
 plot (bw, col = my_colours$abiotic_vert_insect[2], xlab = "Time of transitions (mya)",  
       main = "", ylab = "number of transitions", 
-      ylim = c(0, 12), xlim = c(200,0)) # alter if x values change!
+      ylim = c(0, 6), xlim = c(200,0)) # alter if x values change!
 plot (wb, col = alpha(my_colours$abiotic_vert_insect[3], 0.8), add = TRUE)
 dev.off()
 rm(min, max, ax, wb, bw, insect_to_vert, vert_to_insect)
