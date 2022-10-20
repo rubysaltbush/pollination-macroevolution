@@ -2,25 +2,25 @@
 1000 trees with a mapped discrete character with states:
  2, 4 
 
-trees have 53.401 changes between states on average
+trees have 53.454 changes between states on average
 
 changes are of the following types:
        2,4    4,2
-x->y 7.297 46.104
+x->y 7.387 46.067
 
 mean total time spent in each state is:
                 2            4    total
-raw  7.539404e+03 6.871846e+04 76257.87
-prop 9.886722e-02 9.011328e-01     1.00
+raw  7.541314e+03 6.871655e+04 76257.87
+prop 9.889227e-02 9.011077e-01     1.00
 
 [1] " "
 
 Distribution of changes from stochastic mapping:
 	2->4		4->2
-	Min.   :2	Min.   :39
+	Min.   :2	Min.   :40
 	Median :7	Median :46
-	Mean   :7.3	Mean   :46.1
-	Max.   :17	Max.   :54
+	Mean   :7.39	Mean   :46.07
+	Max.   :16	Max.   :54
 
 95% HPD interval(2->4): [3, 11]
 95% HPD interval(4->2): [41, 50]
@@ -30,44 +30,44 @@ Distribution of changes from stochastic mapping:
 1000 trees with a mapped discrete character with states:
  5, 6 
 
-trees have 73.609 changes between states on average
+trees have 73.912 changes between states on average
 
 changes are of the following types:
         5,6    6,5
-x->y 39.745 33.864
+x->y 39.888 34.024
 
 mean total time spent in each state is:
                 5            6    total
-raw  6.227309e+04 2.541093e+03 64814.19
-prop 9.607942e-01 3.920581e-02     1.00
+raw  6.226095e+04 2.553238e+03 64814.19
+prop 9.606068e-01 3.939319e-02     1.00
 
 [1] " "
 
 Distribution of changes from stochastic mapping:
 	5->6		6->5
-	Min.   :28	Min.   :15
+	Min.   :29	Min.   :18
 	Median :40	Median :33
-	Mean   :39.74	Mean   :33.86
-	Max.   :53	Max.   :63
+	Mean   :39.89	Mean   :34.02
+	Max.   :55	Max.   :70
 
-95% HPD interval(5->6): [31, 47]
-95% HPD interval(6->5): [21, 46]
+95% HPD interval(5->6): [32, 47]
+95% HPD interval(6->5): [20, 46]
 
 [1] " "
 [1] "wind_water_vert_insect_ARD"
 1000 trees with a mapped discrete character with states:
  2, 3, 5, 6 
 
-trees have 130.782 changes between states on average
+trees have 130.685 changes between states on average
 
 changes are of the following types:
-      2,3   2,5  2,6 3,2   3,5 3,6    5,2   5,3   5,6   6,2   6,3    6,5
-x->y 1.54 7.226 0.04   0 0.018   0 47.883 0.547 39.76 0.007 0.002 33.759
+       2,3   2,5   2,6 3,2   3,5 3,6    5,2   5,3    5,6   6,2 6,3    6,5
+x->y 1.528 7.091 0.024   0 0.016   0 47.872 0.551 39.859 0.006   0 33.738
 
 mean total time spent in each state is:
                 2            3            5            6   total
-raw  7911.5989400 6.411291e+02 6.764003e+04 2.584135e+03 78776.9
-prop    0.1004304 8.138542e-03 8.586278e-01 3.280321e-02     1.0
+raw  7897.1135441 639.16974626 6.766137e+04 2.579238e+03 78776.9
+prop    0.1002466   0.00811367 8.588987e-01 3.274105e-02     1.0
 
 [1] " "
 
@@ -75,14 +75,14 @@ Distribution of changes from stochastic mapping:
 
 	2->3		2->5
 	Min.   :1	Min.   :2
-	Median :2	Median :7
-	Mean   :1.54	Mean   :7.23
-	Max.   :3	Max.   :19
+	Median :1	Median :7
+	Mean   :1.53	Mean   :7.09
+	Max.   :4	Max.   :15
 
 	2->6		3->2
 	Min.   :0	Min.   :0
 	Median :0	Median :0
-	Mean   :0.04	Mean   :0
+	Mean   :0.02	Mean   :0
 	Max.   :1	Max.   :0
 
 	3->5		3->6
@@ -92,22 +92,22 @@ Distribution of changes from stochastic mapping:
 	Max.   :1	Max.   :0
 
 	5->2		5->3
-	Min.   :40	Min.   :0
+	Min.   :41	Min.   :0
 	Median :48	Median :1
-	Mean   :47.88	Mean   :0.55
-	Max.   :57	Max.   :2
+	Mean   :47.87	Mean   :0.55
+	Max.   :59	Max.   :2
 
 	5->6		6->2
-	Min.   :26	Min.   :0
+	Min.   :28	Min.   :0
 	Median :40	Median :0
-	Mean   :39.76	Mean   :0.01
-	Max.   :54	Max.   :1
+	Mean   :39.86	Mean   :0.01
+	Max.   :56	Max.   :1
 
 	6->3		6->5
-	Min.   :0	Min.   :16
+	Min.   :0	Min.   :18
 	Median :0	Median :33
-	Mean   :0	Mean   :33.76
-	Max.   :1	Max.   :72
+	Mean   :0	Mean   :33.74
+	Max.   :0	Max.   :64
 
 95% HPD interval(2->3): [1, 2]
 95% HPD interval(2->5): [3, 11]
@@ -115,11 +115,11 @@ Distribution of changes from stochastic mapping:
 95% HPD interval(3->2): [0, 0]
 95% HPD interval(3->5): [0, 0]
 95% HPD interval(3->6): [0, 0]
-95% HPD interval(5->2): [44, 53]
+95% HPD interval(5->2): [42, 52]
 95% HPD interval(5->3): [0, 1]
 95% HPD interval(5->6): [32, 47]
 95% HPD interval(6->2): [0, 0]
 95% HPD interval(6->3): [0, 0]
-95% HPD interval(6->5): [21, 46]
+95% HPD interval(6->5): [19, 45]
 
 [1] " "

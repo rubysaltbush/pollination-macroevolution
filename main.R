@@ -39,7 +39,7 @@ source("scripts/my_colours.R")
 
 # stochastic character mapping of ASR results
 # exports most major figures from paper
-# takes ~1 hour to run, will have to press enter twice
+# takes ~30 minutes to run, will have to press enter twice
 source("scripts/analysis/simmap.R")
 
 # correlating evolution of pollination to environment
