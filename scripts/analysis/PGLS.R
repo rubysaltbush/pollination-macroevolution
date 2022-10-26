@@ -86,14 +86,14 @@ par(las = 1, bty = "l") # remove plot outline
 palette(c("#F6BA65", "#BD8DAA"))# set colour palette
 plot(meanLAI ~ abs_meanlat, 
      data = poll_pgls, 
-     pch = 2, cex = 1, 
+     pch = 16, cex = 1, 
      col = factor(wind_animal),
      xlab = "Species mean latitude (absolute)", 
      ylab = "Species mean Leaf Area Index")
 legend("topright",
-       legend = c("animal pollinated (1)", "wind pollinated (0)"),
+       legend = c("animal pollinated", "wind pollinated"),
        col = c(my_colours$wind_water_animal[3], my_colours$wind_water_animal[1]),
-       pch = 2, bty = "n")
+       pch = 16, bty = "n")
 dev.off()
 
 # mean absolute latitude
@@ -101,12 +101,16 @@ pdf(file="figures/windanimal_absmeanlat.pdf", width = 8, height = 5)
 par(las = 1, bty = "l") # remove plot outline
 plot(wind_animal ~ abs_meanlat, 
      data = poll_pgls,
-     pch = 2, cex = 1, 
+     pch = 1, cex = 1, 
      col = factor(wind_animal),
      xlab = "Mean latitude (absolute)", ylab = "Probability of animal pollination",
      xlim = c(0, 65))
 cc <- coef(PGLS$abs_lat)
 curve(plogis(cc[1] + cc[2] * x), col = "red", add = TRUE)
+legend("right",
+       legend = c("animal pollinated", "wind pollinated"),
+       col = c(my_colours$wind_water_animal[3], my_colours$wind_water_animal[1]),
+       pch = 1, bty = "n")
 dev.off()
 rm(cc)
 
@@ -115,7 +119,7 @@ pdf(file="figures/windanimal_meanLAI.pdf", width = 8, height = 5)
 par(las = 1, bty = "l") # remove plot outline
 plot(wind_animal ~ meanLAI, 
      data = poll_pgls,
-     pch = 2, cex = 1, 
+     pch = 1, cex = 1, 
      col = factor(wind_animal),
      xlab = "Mean Leaf Area Index", ylab = "Probability of animal pollination",
      xlim = c(0, 80))
@@ -130,10 +134,6 @@ rm(PGLS, PGLS_results, poll_pgls, tree_nowaterpolymissing)
 
 
 #### phylogenetic logistic regression for biomes ####
-# NOT ACTUALLY SURE IF BELOW MAKES SENSE FOR THREE CATEGORY SUPERBIOMES?? SHOULD
-# THEY BE ORDERED??
-# YES SHOULD BE ORDINAL
-# THUS NEED TO REDEFINE ORDER AS TROPICAL -> TEMPERATE -> ARID
 
 ## prepare data
 pollbiome_pgls <- pollination1209 %>%
