@@ -125,7 +125,7 @@ rate_matrix$binary_uncorr
 rate_matrix$binary_uncorr <- corHMM::equateStateMatPars(rate_matrix$binary_uncorr, c(1,2))
 rate_matrix$binary_uncorr
 
-# corHMM analyses take ~2 hours to run (16 models total)
+# corHMM analyses take ~1.5 hours to run on 3 cores (16 models total)
 corHMM <- cache_RDS("results/corHMM_corr.rds", function(){
   #### run corHMM ####
   
@@ -135,59 +135,31 @@ corHMM <- cache_RDS("results/corHMM_corr.rds", function(){
   # store results from all corHMM analyses in a list
   corHMM <- list()
   
-  # first run correlated and uncorrelated models with all 3 biomes, using both
-  # maddfitz and equal rate priors
+  # first run correlated and uncorrelated models with all 3 biomes, using
+  # equal rate prior which as good as any other by my tests
   
   # run corHMM with no hidden states on two characters, will model correlated evolution
-  # below runs ASR on wind/animal and 3 biomes (6 states), takes ages
-  corHMM$allbiomes_corr_maddfitz <- corHMM::corHMM(phy = tree_nowater, 
+  # below runs ASR on wind/animal and 3 biomes (6 states)
+  start_time <- Sys.time()
+  corHMM$allbiomes_corr <- corHMM::corHMM(phy = tree_nowater, 
                                                    data = pollination_biome,
                                                    rate.cat = 1, 
                                                    rate.mat = rate_matrix$allbiomes_corr,
                                                    model = "ARD", 
-                                                   nstarts = 10, n.cores = no_cores, 
-                                                   root.p = "maddfitz")
-  corHMM$allbiomes_uncorr_maddfitz <- corHMM::corHMM(phy = tree_nowater, 
+                                                   nstarts = 10, n.cores = no_cores)
+  corHMM$allbiomes_uncorr <- corHMM::corHMM(phy = tree_nowater, 
                                                    data = pollination_biome,
                                                    rate.cat = 1, 
                                                    rate.mat = rate_matrix$allbiomes_uncorr,
                                                    model = "ARD", 
-                                                   nstarts = 10, n.cores = no_cores, 
-                                                   root.p = "maddfitz")
-  corHMM$allbiomes_corr_eqwt <- corHMM::corHMM(phy = tree_nowater, 
-                                                     data = pollination_biome,
-                                                     rate.cat = 1, 
-                                                     rate.mat = rate_matrix$allbiomes_corr,
-                                                     model = "ARD", 
-                                                     nstarts = 10, n.cores = no_cores, 
-                                                     root.p = "NULL")
-  corHMM$allbiomes_uncorr_eqwt <- corHMM::corHMM(phy = tree_nowater, 
-                                               data = pollination_biome,
-                                               rate.cat = 1, 
-                                               rate.mat = rate_matrix$allbiomes_uncorr,
-                                               model = "ARD", 
-                                               nstarts = 10, n.cores = no_cores, 
-                                               root.p = "NULL")
+                                                   nstarts = 10, n.cores = no_cores)
+  end_time <- Sys.time()
+  end_time - start_time
+  # Time difference of 36.85346 mins
   
   # then run models on three binary biome definitions with 2 different root priors
-  
+  start_time <- Sys.time()
   for(name in names(pollbiome)){
-    corHMM[[paste(name, "_corr_maddfitz", sep = "")]] <- corHMM(phy = tree_nowater, 
-                                                       data = pollbiome[[name]], 
-                                                       rate.cat = 1, 
-                                                       rate.mat = rate_matrix$binary_corr, 
-                                                       node.states = "marginal",
-                                                       root.p = "maddfitz",
-                                                       nstarts = 10,
-                                                       n.cores = no_cores)
-    corHMM[[paste(name, "_uncorr_maddfitz", sep = "")]] <- corHMM(phy = tree_nowater, 
-                                                        data = pollbiome[[name]], 
-                                                        rate.cat = 1, 
-                                                        rate.mat = rate_matrix$binary_uncorr, 
-                                                        node.states = "marginal",
-                                                        root.p = "maddfitz",
-                                                        nstarts = 10,
-                                                        n.cores = no_cores)
     corHMM[[paste(name, "_corr_eqwt", sep = "")]] <- corHMM(phy = tree_nowater, 
                                                                data = pollbiome[[name]], 
                                                                rate.cat = 1, 
@@ -205,7 +177,9 @@ corHMM <- cache_RDS("results/corHMM_corr.rds", function(){
                                                                  nstarts = 10,
                                                                  n.cores = no_cores)
   }
-  
+  end_time <- Sys.time()
+  end_time - start_time
+  # Time difference of 55.42604 mins
   
   # save RDS of model output so I don't have to re-run these all the time!
   saveRDS(corHMM, file = "results/corHMM_corr.rds")
@@ -221,10 +195,10 @@ corHMM_results <- cache_RDS("results/corHMM_corr_results.csv",
   for (name in names(corHMM)){
     # export states as csv
     write.csv(x = corHMM[[name]]$states, 
-              file = paste("results/", name, "_states.csv", sep = ""))
+              file = paste("results/biomes/", name, "_states.csv", sep = ""))
     # export rates as csv
     write.csv(x = corHMM[[name]]$solution,
-              file = paste("results/", name, "_rates.csv", sep = ""))
+              file = paste("results/biomes/", name, "_rates.csv", sep = ""))
     # assemble model fit data into df to export later
     results_row <- data.frame(model = paste(name, sep = ""), 
                               loglik = corHMM[[name]]$loglik,
@@ -246,26 +220,12 @@ for(name in names(corHMM)){
 }
 sink(file = NULL)
 
-rm(pollbiome, pollination_biome, rate_matrix)
-
-#### explore results ####
-
-# maddfitz vs equal weight root priors
-# do they give same results? which better AICc?
-# comparing AICc values, maddfitz and equal weight root prior give identical
-# model fits, but slightly different transition rates
-
-# ALL models suggest that correlated evolution is of similar likelihood to 
-# uncorrelated evolution, except arid/non-arid correlated evolution more likely
-# than uncorrelated BUT this model gives strange transition rates and was likely
-# affected by the rarity of wind-pollinated arid taxa (n = 24)
-
 # number of arid taxa with wind pollination?
 pollbiome$arid %>% dplyr::group_by(wind_animal, aridSB50) %>% dplyr::summarise(n())
+# 24 taxa wind pollinated and arid, not many
 
 # table of pollination mode vs superbiome occupancy
 pollination_biome %>% dplyr::group_by(wind_animal, SB50) %>% dplyr::summarise(n())
 
-# should probably do graph of phylogeny with pollination mode versus superbiome
-# but how to graph this?
+rm(name, pollbiome, pollination_biome, rate_matrix)
 
