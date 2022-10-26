@@ -227,5 +227,5 @@ pollbiome$arid %>% dplyr::group_by(wind_animal, aridSB50) %>% dplyr::summarise(n
 # table of pollination mode vs superbiome occupancy
 pollination_biome %>% dplyr::group_by(wind_animal, SB50) %>% dplyr::summarise(n())
 
-rm(name, pollbiome, pollination_biome, rate_matrix)
+rm(name, pollbiome, pollination_biome, rate_matrix, corHMM, corHMM_results, tree_nowater)
 
