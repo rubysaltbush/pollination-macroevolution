@@ -1,5 +1,5 @@
-# run phylogenetic logistic regression on pollination mode (wind/animal) and
-# mean latitude, temperature, rainfall and LAI as general tests of relatedness
+# run phylogenetic logistic regression on pollination mode (wind/animal) vs.
+# absolute mean latitude and LAI as test of relatedness
 
 #### prepare data and tree ####
 
@@ -133,7 +133,8 @@ palette("default") # set colour palette back to default
 rm(PGLS, PGLS_results, poll_pgls, tree_nowaterpolymissing)
 
 
-#### phylogenetic logistic regression for biomes ####
+#### phylogenetic logistic regression for categorical biomes ####
+# using superbiome classification from R-B 2020
 
 ## prepare data
 pollbiome_pgls <- pollination1209 %>%
