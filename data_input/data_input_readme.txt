@@ -1,4 +1,4 @@
-pollination_macroevolution_datatopublish_20221014 - Ruby Stephens - added 2022-10-14 - pollination system or syndrome data for 1201 species from Ramírez-Barahona et al (2020) tree, with full references for sources of data and notes on pollination rewards
+pollination_macroevolution_datatopublish_20221125 - Ruby Stephens - added 2022-10-14 - updated 2022-11-25 - pollination system or syndrome data for 1201 species from Ramírez-Barahona et al (2020) tree, with full references for sources of data and notes on pollination rewards, re-checked 2022-11-25 to ensure "animal" pollination syndromes can't be made more specific
 
 eFLOWER-1209_RC_complete_MCC.phy - Hervé Sauquet - added 2021-10-20 - "The tree I am sending was obtained by converting tip names into those matching explicit species and dropping the 8 extra tips. For reference, this is the MCC tree from the RC-complete analysis of Santiago's paper. This is an electronic tree file in Phylip (basic parenthetic) format."
 
