@@ -5,7 +5,7 @@
 pollination1209 <- cache_RDS("data_output/pollination1209.csv", read_function = readr::read_csv,
   save_function = write_csv, function() {
     # read in original data
-    pollination1209 <- readr::read_csv("data_input/pollination_macroevolution_datatopublish_20221014.csv")
+    pollination1209 <- readr::read_csv("data_input/pollination_macroevolution_datatopublish_20221125.csv")
 
     # remove references and text descriptions, condense to columns of interest
     pollination1209 <- pollination1209 %>%
@@ -121,7 +121,7 @@ pollination1209 <- cache_RDS("data_output/pollination1209.csv", read_function = 
     #### TABLES ####
     # syndromes vs systems?
     table(pollination1209$syndrome_or_system)
-    # 734 syndromes, 425 systems, makes sense looking at confidence scores
+    # 728 syndromes, 432 systems, makes sense looking at confidence scores
     
     table(pollination1209$wind_water_vert_insect)
     # 434 families in final data
@@ -437,3 +437,4 @@ pollination1209 <- cache_RDS("data_output/pollination1209.csv", read_function = 
     # write pollination1209 to data output folder so it can be cached!
     write_csv(pollination1209, "data_output/pollination1209.csv")
   })
+
