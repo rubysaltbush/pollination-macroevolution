@@ -128,7 +128,7 @@ pollination1209 <- cache_RDS("data_output/pollination1209.csv", read_function = 
     nrow(pollination1209 %>% dplyr::select(ParFamTax) %>% distinct())
     # number of families WITH data 433!
     nrow(pollination1209 %>% dplyr::filter(wind_water_vert_insect != "?") %>% dplyr::select(ParFamTax) %>% distinct())
-    # number of families withOUT data 35!
+    # number of families withOUT data 34!
     nrow(pollination1209 %>% dplyr::filter(wind_water_vert_insect == "?") %>% dplyr::select(ParFamTax) %>% distinct())
     # families missing from final data
     without <- pollination1209 %>% dplyr::filter(wind_water_vert_insect == "?") %>% dplyr::select(ParFamTax) %>% distinct()
@@ -142,7 +142,13 @@ pollination1209 <- cache_RDS("data_output/pollination1209.csv", read_function = 
     # how often has wind pollination been explicitly tested?
     table(pollination1209$wind_pollination_explicitly_tested)
     # only 47 out of 1201! not often explicitly tested, even (or especially?)
-    # in taxa assumed to be wind pollinated
+    # HOLD UP CONFIDENCE SCORES SAY THIS SHOULD BE 45???
+    test <- pollination1209 %>%
+      dplyr::filter(wind_pollination_explicitly_tested == "yes")
+    rm(test)
+    # for two taxa wind pollination was explicitly tested in another species
+    # of the same genus, so species-level scoring was for the matching syndrome
+    # wind pollination testing in taxa assumed to be wind pollinated?
     table(pollination1209[pollination1209$abiotic_animal == "1",]$wind_pollination_explicitly_tested)
     # only explicitly tested in 10 out of 130 abiotically pollinated taxa
 
@@ -309,7 +315,8 @@ pollination1209 <- cache_RDS("data_output/pollination1209.csv", read_function = 
     gbif_filt_spatial <- gbif_filt_spatial %>%
       dplyr::mutate(ID = as.numeric(rownames(gbif_filt_spatial))) %>%
       dplyr::left_join(record_meanLAI, by = "ID") %>%
-      dplyr::select(-ID)
+      dplyr::select(-ID) %>%
+      dplyr::rename(globalmeanLAI1981_2020 = layer)
     rm(record_meanLAI)
     
     # remove sf spatial element from gbif_filt_spatial otherwise VERY slow
@@ -396,6 +403,10 @@ pollination1209 <- cache_RDS("data_output/pollination1209.csv", read_function = 
       dplyr::select(ParFamTax) %>% 
       dplyr::distinct()
     # 389, majority by far - 389/433 = 89.8% of families
+    animalpollnopolyfams <- pollination1209 %>% 
+      dplyr::filter(wind_water_animal %in% c("4")) %>%
+      dplyr::select(ParFamTax) %>% 
+      dplyr::distinct()
     # 373 if excluding ambophily - 373/433 = 86% of families
     
     # how many families water pollinated?
@@ -404,6 +415,10 @@ pollination1209 <- cache_RDS("data_output/pollination1209.csv", read_function = 
       dplyr::select(ParFamTax) %>% 
       dplyr::distinct()
     # 8 families with water pollination! 8/433 = 1.9%
+    waterpollnopolyfams <- pollination1209 %>% 
+      dplyr::filter(wind_water_animal %in% c("3")) %>%
+      dplyr::select(ParFamTax) %>% 
+      dplyr::distinct()
     # 6 families if excluding polymorphies, 6/433 = 1.4%
     
     # how many families ONLY wind or ONLY animal pollinated?
@@ -432,7 +447,8 @@ pollination1209 <- cache_RDS("data_output/pollination1209.csv", read_function = 
       dplyr::filter(!(ParFamTax %in% windwateranimalfams$ParFamTax))
     # 5 families entirely water pollinated - 5/433 = 1.2%
     rm(windpollfams, animalpollfams, animalonly, windonly, windanimalfams,
-       wateronly, windwateranimalfams, waterpollfams, waterpolyfams, families)
+       wateronly, windwateranimalfams, waterpollfams, waterpolyfams, families,
+       waterpollnopolyfams, animalpollnopolyfams)
     
     # write pollination1209 to data output folder so it can be cached!
     write_csv(pollination1209, "data_output/pollination1209.csv")
