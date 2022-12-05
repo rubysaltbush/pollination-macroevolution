@@ -2,16 +2,16 @@
 1000 trees with a mapped discrete character with states:
  2, 4 
 
-trees have 53.454 changes between states on average
+trees have 53.465 changes between states on average
 
 changes are of the following types:
-       2,4    4,2
-x->y 7.387 46.067
+     2,4    4,2
+x->y 7.3 46.165
 
 mean total time spent in each state is:
                 2            4    total
-raw  7.541314e+03 6.871655e+04 76257.87
-prop 9.889227e-02 9.011077e-01     1.00
+raw  7.541231e+03 6.873498e+04 76276.21
+prop 9.886741e-02 9.011326e-01     1.00
 
 [1] " "
 
@@ -19,65 +19,65 @@ Distribution of changes from stochastic mapping:
 	2->4		4->2
 	Min.   :2	Min.   :40
 	Median :7	Median :46
-	Mean   :7.39	Mean   :46.07
-	Max.   :16	Max.   :54
+	Mean   :7.3	Mean   :46.16
+	Max.   :17	Max.   :55
 
-95% HPD interval(2->4): [3, 11]
-95% HPD interval(4->2): [41, 50]
+95% HPD interval(2->4): [4, 12]
+95% HPD interval(4->2): [42, 50]
 
 [1] " "
 [1] "vert_insect_ARD"
 1000 trees with a mapped discrete character with states:
  5, 6 
 
-trees have 73.912 changes between states on average
+trees have 89.009 changes between states on average
 
 changes are of the following types:
-        5,6    6,5
-x->y 39.888 34.024
+        5,6   6,5
+x->y 47.029 41.98
 
 mean total time spent in each state is:
                 5            6    total
-raw  6.226095e+04 2.553238e+03 64814.19
-prop 9.606068e-01 3.939319e-02     1.00
+raw  6.204952e+04 2.783006e+03 64832.53
+prop 9.570739e-01 4.292608e-02     1.00
 
 [1] " "
 
 Distribution of changes from stochastic mapping:
 	5->6		6->5
-	Min.   :29	Min.   :18
-	Median :40	Median :33
-	Mean   :39.89	Mean   :34.02
-	Max.   :55	Max.   :70
+	Min.   :34	Min.   :22
+	Median :47	Median :41
+	Mean   :47.03	Mean   :41.98
+	Max.   :64	Max.   :100
 
-95% HPD interval(5->6): [32, 47]
-95% HPD interval(6->5): [20, 46]
+95% HPD interval(5->6): [39, 56]
+95% HPD interval(6->5): [26, 57]
 
 [1] " "
 [1] "wind_water_vert_insect_ARD"
 1000 trees with a mapped discrete character with states:
  2, 3, 5, 6 
 
-trees have 130.685 changes between states on average
+trees have 145.933 changes between states on average
 
 changes are of the following types:
-       2,3   2,5   2,6 3,2   3,5 3,6    5,2   5,3    5,6   6,2 6,3    6,5
-x->y 1.528 7.091 0.024   0 0.016   0 47.872 0.551 39.859 0.006   0 33.738
+       2,3   2,5   2,6 3,2  3,5 3,6    5,2   5,3    5,6   6,2 6,3    6,5
+x->y 1.543 7.117 0.022   0 0.02   0 47.801 0.541 46.879 0.004   0 42.006
 
 mean total time spent in each state is:
                 2            3            5            6   total
-raw  7897.1135441 639.16974626 6.766137e+04 2.579238e+03 78776.9
-prop    0.1002466   0.00811367 8.588987e-01 3.274105e-02     1.0
+raw  7900.9137110 6.388288e+02 6.740828e+04 2.828877e+03 78776.9
+prop    0.1002948 8.109342e-03 8.556859e-01 3.590998e-02     1.0
 
 [1] " "
 
 Distribution of changes from stochastic mapping:
 
 	2->3		2->5
-	Min.   :1	Min.   :2
-	Median :1	Median :7
-	Mean   :1.53	Mean   :7.09
-	Max.   :4	Max.   :15
+	Min.   :0	Min.   :3
+	Median :2	Median :7
+	Mean   :1.54	Mean   :7.12
+	Max.   :4	Max.   :17
 
 	2->6		3->2
 	Min.   :0	Min.   :0
@@ -92,22 +92,22 @@ Distribution of changes from stochastic mapping:
 	Max.   :1	Max.   :0
 
 	5->2		5->3
-	Min.   :41	Min.   :0
+	Min.   :40	Min.   :0
 	Median :48	Median :1
-	Mean   :47.87	Mean   :0.55
-	Max.   :59	Max.   :2
+	Mean   :47.8	Mean   :0.54
+	Max.   :57	Max.   :2
 
 	5->6		6->2
-	Min.   :28	Min.   :0
-	Median :40	Median :0
-	Mean   :39.86	Mean   :0.01
-	Max.   :56	Max.   :1
+	Min.   :32	Min.   :0
+	Median :46	Median :0
+	Mean   :46.88	Mean   :0
+	Max.   :65	Max.   :1
 
 	6->3		6->5
-	Min.   :0	Min.   :18
-	Median :0	Median :33
-	Mean   :0	Mean   :33.74
-	Max.   :0	Max.   :64
+	Min.   :0	Min.   :20
+	Median :0	Median :41
+	Mean   :0	Mean   :42.01
+	Max.   :0	Max.   :91
 
 95% HPD interval(2->3): [1, 2]
 95% HPD interval(2->5): [3, 11]
@@ -115,11 +115,11 @@ Distribution of changes from stochastic mapping:
 95% HPD interval(3->2): [0, 0]
 95% HPD interval(3->5): [0, 0]
 95% HPD interval(3->6): [0, 0]
-95% HPD interval(5->2): [42, 52]
+95% HPD interval(5->2): [43, 52]
 95% HPD interval(5->3): [0, 1]
-95% HPD interval(5->6): [32, 47]
+95% HPD interval(5->6): [38, 56]
 95% HPD interval(6->2): [0, 0]
 95% HPD interval(6->3): [0, 0]
-95% HPD interval(6->5): [19, 45]
+95% HPD interval(6->5): [26, 59]
 
 [1] " "

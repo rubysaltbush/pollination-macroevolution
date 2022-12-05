@@ -45,7 +45,7 @@ simmaps <- foreach(name = names(ASR_forsimmap)) %dopar% {
 names(simmaps) <- names(ASR_forsimmap)
 end_time <- Sys.time()
 end_time - start_time
-# Time difference of 3 mins for 3*1000 sims on 3 cores
+# Time difference of 6 mins for 3*1000 sims on 3 cores
 rm(end_time, start_time)
 
 # describe and calculate 95% confidence intervals etc for # of transitions in simmaps
@@ -59,7 +59,7 @@ for(name in names(simmaps)){
 }
 end_time <- Sys.time()
 end_time - start_time
-# Time difference of 2 mins
+# Time difference of 2.5 mins
 rm(name, start_time, end_time)
 
 # check out results!
@@ -70,9 +70,9 @@ simmap_density$vert_insect_ARD
 simmap_descriptions$wind_water_vert_insect_ARD
 simmap_density$wind_water_vert_insect_ARD
 
-# more transitions on average between insect and vertebrate pollination (73)
+# more transitions on average between insect and vertebrate pollination (89)
 # than between wind and animal (53)
-# 130 changes between pollination modes overall
+# 146 changes between pollination modes overall
 
 # export print results from simmapping to text file
 sink(file = "results/simmap_descriptions.txt")
@@ -90,6 +90,7 @@ rm(name, simmap_density)
 
 ### CIRCULAR PLOT ###
 # PUBLICATION WORTHY FIGURE showing all pollination modes
+# make sure my_colours loaded!
 # based on single random simmap but with ancestral nodes from ASR
 pdf(file="figures/corHMM_ARD_wind_water_vert_insect_circular.pdf", 
     width = 30, height = 30, useDingbats = FALSE)
@@ -388,11 +389,11 @@ ax <- pretty(min:max, n = 20)
 vi <- hist(ivi[,1], breaks = ax, plot = FALSE)
 iv <- hist(ivi[,2], breaks = ax, plot = FALSE)
 plot (vi, col = my_colours$abiotic_vert_insect[3], 
-      xlim = c(10,70), ylim = c(0, 400), 
+      xlim = c(0,100), ylim = c(0, 400), 
       xlab = "total number of transitions",  main = "", 
       ylab = "frequency across 1000 simulations")
 plot (iv, col = alpha(my_colours$abiotic_vert_insect[2], 0.7), add = TRUE)
-legend("topleft", legend = c("insect to vertebrate", "vertebrate to insect"),
+legend("topright", legend = c("insect to vertebrate", "vertebrate to insect"),
        fill = c(my_colours$abiotic_vert_insect[3], my_colours$abiotic_vert_insect[2]),
        pt.lwd = 0.001, bty = "n")
 dev.off()
@@ -415,7 +416,7 @@ to_water <- hist(wwvi[,2], breaks = ax, plot = FALSE)
 to_insect <- hist(wwvi[,3], breaks = ax, plot = FALSE)
 to_vert <- hist(wwvi[,4], breaks = ax, plot = FALSE)
 plot (to_wind, col = my_colours$wind_water_vert_insect[1], 
-      xlim = c(0,80), ylim = c(0,1000), 
+      xlim = c(0,100), ylim = c(0,1000), 
       xlab = "total number of transitions",  main = "", 
       ylab = "frequency across 1000 simulations")
 plot (to_water, col = my_colours$wind_water_vert_insect[2], 
@@ -660,7 +661,7 @@ readr::write_csv(avg_trans_times, "results/mean_transition_times_vert_insect.csv
 
 ## time figures ##
 
-# histogram of wind and animal pollination transition timing average
+# histogram of vertebrate and insect pollination transition timing average
 pdf("figures/vert_insect_transition_times_mean_hist.pdf", height = 2.8, width = 6)
 min <- min(avg_trans_times$avg_time)
 max <- max(avg_trans_times$avg_time)
@@ -721,7 +722,7 @@ vert_to_insect <- vi_trans_cumul %>%
 
 # first set up basic plot parameters
 plot(vert_to_insect$trans_no ~ vert_to_insect$time,
-     type = "p", bty = "l", xlim = c(200,0), ylim = c(0,65),
+     type = "p", bty = "l", xlim = c(200,0), ylim = c(0,75),
      col = alpha(my_colours$abiotic_vert_insect[2], 0.1), pch = 17,
      xlab = "Time of transitions (mya)", 
      ylab = "Cumulative number of transitions",
