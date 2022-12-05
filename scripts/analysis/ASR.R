@@ -71,7 +71,7 @@ ASR <- cache_RDS("results/ASR.rds", function(){
   rm(ASR_ARD)
   end_time <- Sys.time()
   end_time - start_time
-  # time elapsed = 3.911384 hours
+  # time elapsed = 3.739425 hours on 3 cores
   rm(start_time, end_time)
   
   # output printout of different models to text file
@@ -216,7 +216,7 @@ ASR_forsimmap$wind_animal_ER
 # <2 (i.e. no) difference in AICc, ARD transition rate from wind to animal higher
 ASR_forsimmap$vert_insect_ARD
 ASR_forsimmap$vert_insect_ER
-# 24 difference in AICc, ARD lower. Transition rate from vert to insect higher
+# 30 difference in AICc, ARD lower. Transition rate from vert to insect higher
 
 # output printout of different models to text file
 sink(file = "results/ASR_forsimmap_descriptions.txt")
@@ -249,7 +249,7 @@ for (name in names(ASR_forsimmap)){
 }
 
 readr::write_csv(ASR_forsimmap_results, "results/ASR_forsimmap_results.csv")
-rm(name, results_row, matrices, ASR_forsimmap_results)
+rm(name, results_row, matrices, ASR_forsimmap_results, tree_vert_insect, tree_wind_animal)
 
 # and output Rds so can cache these ASRs
 saveRDS(ASR_forsimmap, file = "results/ASR_forsimmap.rds")
