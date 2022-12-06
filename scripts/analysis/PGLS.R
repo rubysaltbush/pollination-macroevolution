@@ -26,7 +26,7 @@ poll_pgls[,1] <- NULL
 poll_pgls$wind_animal <- gsub("2", "0", poll_pgls$wind_animal)
 poll_pgls$wind_animal <- gsub("4", "1", poll_pgls$wind_animal)
 table(poll_pgls$wind_animal)
-# 114 wind pollinated taxa to 907 animal pollinated taxa
+# 114 wind pollinated taxa to 908 animal pollinated taxa
 
 # double check distribution of continuous variables
 plot(poll_pgls$abs_meanlat) # some outlying high values
@@ -122,7 +122,7 @@ plot(wind_animal ~ meanLAI,
      pch = 1, cex = 1, 
      col = factor(wind_animal),
      xlab = "Mean Leaf Area Index", ylab = "Probability of animal pollination",
-     xlim = c(0, 80))
+     xlim = c(0, 8))
 cc <- coef(PGLS$LAI)
 curve(plogis(cc[1] + cc[2] * x), col = "red", add = TRUE)
 dev.off()

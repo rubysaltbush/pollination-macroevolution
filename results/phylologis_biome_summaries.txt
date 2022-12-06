@@ -4,14 +4,14 @@ phylolm::phyloglm(formula = wind_animal ~ SB50, data = pollbiome_pgls,
     phy = tree_nowaterpolymissing2, method = "logistic_IG10", 
     boot = 100)
        AIC     logLik Pen.logLik 
-     419.3     -205.7     -202.8 
+     419.4     -205.7     -202.9 
 
 Parameter estimate(s) from GEE approximation:
-alpha: 0.00305365 
+alpha: 0.003053284 
 
 Coefficients:
 (Intercept)       SB501       SB502 
-  2.3709273  -0.3575759  -0.5861365 
+  2.3732027  -0.3598512  -0.5884119 
 [1] " "
 [1] "biome_trop"
 Call:
@@ -19,14 +19,14 @@ phylolm::phyloglm(formula = wind_animal ~ SB50_trop, data = pollbiome_pgls,
     phy = tree_nowaterpolymissing2, method = "logistic_IG10", 
     boot = 100)
        AIC     logLik Pen.logLik 
-     416.8     -205.4     -204.1 
+     416.8     -205.4     -204.2 
 
 Parameter estimate(s) from GEE approximation:
-alpha: 0.002962469 
+alpha: 0.002962458 
 
 Coefficients:
 (Intercept)  SB50_trop1 
-  1.9373448   0.4335826 
+  1.9373448   0.4358579 
 [1] " "
 [1] "biome_arid"
 Call:
@@ -34,14 +34,14 @@ phylolm::phyloglm(formula = wind_animal ~ SB50_arid, data = pollbiome_pgls,
     phy = tree_nowaterpolymissing2, method = "logistic_IG10", 
     boot = 100)
        AIC     logLik Pen.logLik 
-     418.5     -206.3     -205.2 
+     418.6     -206.3     -205.2 
 
 Parameter estimate(s) from GEE approximation:
-alpha: 0.003194408 
+alpha: 0.003193976 
 
 Coefficients:
 (Intercept)  SB50_arid1 
-  2.2038165  -0.4190257 
+  2.2051297  -0.4203389 
 [1] " "
 [1] "biome_temp"
 Call:
@@ -49,12 +49,12 @@ phylolm::phyloglm(formula = wind_animal ~ SB50_temp, data = pollbiome_pgls,
     phy = tree_nowaterpolymissing2, method = "logistic_IG10", 
     boot = 100)
        AIC     logLik Pen.logLik 
-     416.8     -205.4     -204.1 
+     416.8     -205.4     -204.2 
 
 Parameter estimate(s) from GEE approximation:
-alpha: 0.002962469 
+alpha: 0.002962458 
 
 Coefficients:
 (Intercept)  SB50_temp1 
-  2.3709273  -0.4335826 
+  2.3732027  -0.4358579 
 [1] " "
