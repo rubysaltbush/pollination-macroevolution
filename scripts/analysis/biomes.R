@@ -44,6 +44,7 @@ pollbiome$trop <- pollbiome$trop %>%
   dplyr::select(taxon_name, wind_animal, tropSB50)
 table(pollbiome$trop$wind_animal)
 table(pollbiome$trop$tropSB50)
+pollbiome$trop %>% dplyr::group_by(tropSB50, wind_animal) %>% dplyr::summarise(n())
 
 ## arid vs non-arid ##
 pollbiome$arid <- pollination_biome
@@ -59,6 +60,8 @@ pollbiome$arid <- pollbiome$arid %>%
   dplyr::select(taxon_name, wind_animal, aridSB50)
 table(pollbiome$arid$wind_animal)
 table(pollbiome$arid$aridSB50)
+pollbiome$arid %>% dplyr::group_by(aridSB50, wind_animal) %>% dplyr::summarise(n())
+# only 24 wind pollinated arid species, not very many
 
 ## temperate vs non-temperate ##
 pollbiome$temp <- pollination_biome
@@ -76,6 +79,7 @@ pollbiome$temp <- pollbiome$temp %>%
   dplyr::select(taxon_name, wind_animal, tempSB50)
 table(pollbiome$temp$wind_animal)
 table(pollbiome$temp$tempSB50)
+pollbiome$temp %>% dplyr::group_by(tempSB50, wind_animal) %>% dplyr::summarise(n())
 
 #### prepare rate matrices ####
 
@@ -219,10 +223,6 @@ for(name in names(corHMM)){
   print(paste(" "))
 }
 sink(file = NULL)
-
-# number of arid taxa with wind pollination?
-pollbiome$arid %>% dplyr::group_by(wind_animal, aridSB50) %>% dplyr::summarise(n())
-# 24 taxa wind pollinated and arid, not many
 
 # table of pollination mode vs superbiome occupancy
 pollination_biome %>% dplyr::group_by(wind_animal, SB50) %>% dplyr::summarise(n())
