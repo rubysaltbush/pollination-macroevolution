@@ -184,6 +184,7 @@ corHMM <- cache_RDS("results/corHMM_corr.rds", function(){
   end_time <- Sys.time()
   end_time - start_time
   # Time difference of 55.42604 mins
+  rm(end_time, start_time)
   
   # save RDS of model output so I don't have to re-run these all the time!
   saveRDS(corHMM, file = "results/corHMM_corr.rds")
