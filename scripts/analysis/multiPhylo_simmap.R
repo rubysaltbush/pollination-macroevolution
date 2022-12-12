@@ -15,8 +15,8 @@ gc()
 
 #### WIND vs. ANIMAL ####
 
-# set number of cores available on local computer (MAX for remote machine) for parallelisation
-no_cores <- parallel::detectCores()
+# set number of cores available on local computer (MAX-1 for remote machine) for parallelisation
+no_cores <- parallel::detectCores()-1
 # set up doParallel to run functions on multiple cores
 cl <- parallel::makeCluster(no_cores)
 doParallel::registerDoParallel(cl)
@@ -63,7 +63,7 @@ for (name in names(matrices)) { # for each of my ONE binary characters
       data = data,
       model = "ARD",
       rate.cat = 1,
-      nstarts = 1,
+      nstarts = 10,
       n.cores = 1
     )
     model <- ASR_for_Q$solution
@@ -130,8 +130,8 @@ gc()
 #### INSECT vs VERTEBRATE ####
 
 
-# set number of cores available on local computer (max) for parallelisation
-no_cores <- parallel::detectCores()
+# set number of cores available on local computer (max-1) for parallelisation
+no_cores <- parallel::detectCores()-1
 # set up doParallel to run functions on multiple cores
 cl <- parallel::makeCluster(no_cores)
 doParallel::registerDoParallel(cl)
@@ -178,7 +178,7 @@ for (name in names(matrices)) { # for each of my ONE binary characters
       data = data,
       model = "ARD",
       rate.cat = 1,
-      nstarts = 1,
+      nstarts = 10,
       n.cores = 1
     )
     model <- ASR_for_Q$solution
@@ -243,7 +243,7 @@ gc()
 
 #### WIND WATER VERT INSECT ####
 
-# set number of cores available on local computer (max) for parallelisation
+# set number of cores available on local computer (max-1) for parallelisation
 no_cores <- parallel::detectCores()-1
 # set up doParallel to run functions on multiple cores
 cl <- parallel::makeCluster(no_cores)
