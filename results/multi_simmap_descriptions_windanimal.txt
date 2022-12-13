@@ -1,0 +1,28 @@
+[1] "wind_animal"
+100000 trees with a mapped discrete character with states:
+ 2, 4 
+
+trees have 54.49411 changes between states on average
+
+changes are of the following types:
+         2,4      4,2
+x->y 7.89879 46.59532
+
+mean total time spent in each state is:
+                2            4    total
+raw  7.420031e+03 6.705996e+04 74479.99
+prop 9.962328e-02 9.003767e-01     1.00
+
+[1] "wind_animal"
+
+Distribution of changes from stochastic mapping:
+	2->4		4->2
+	Min.   :2	Min.   :33
+	Median :7	Median :47
+	Mean   :7.9	Mean   :46.6
+	Max.   :43	Max.   :59
+
+95% HPD interval(2->4): [3, 13]
+95% HPD interval(4->2): [41, 51]
+
+[1] " "
