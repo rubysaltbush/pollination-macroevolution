@@ -88,7 +88,7 @@ for (name in names(matrices)) { # for each of my ONE binary characters
 }
 end_time <- Sys.time()
 end_time - start_time
-# Time difference of 24.28927 mins for 100 sims * 1000 trees on 36 cores
+# Time difference of 1.250503 hours for 100 sims * 1000 trees on 36 cores
 rm(data, name, matrices, start_time, end_time, multi_trees)
 gc() # run "garbage collection" here to free up memory after removing things
 
@@ -203,7 +203,7 @@ for (name in names(matrices)) { # for each of my ONE binary characters
 }
 end_time <- Sys.time()
 end_time - start_time
-# Time difference of 18.86719 mins for 100 sims * 1000 trees on 36 cores
+# Time difference of 1.075449 hours for 100 sims * 1000 trees on 36 cores
 rm(data, name, matrices, start_time, end_time, multi_trees)
 gc() # run "garbage collection" here to free up memory after removing things
 

@@ -1,0 +1,28 @@
+[1] "vert_insect"
+100000 trees with a mapped discrete character with states:
+ 5, 6 
+
+trees have 97.77485 changes between states on average
+
+changes are of the following types:
+         5,6      6,5
+x->y 50.9285 46.84635
+
+mean total time spent in each state is:
+                5            6    total
+raw  6.050802e+04 2.719604e+03 63227.62
+prop 9.569846e-01 4.301545e-02     1.00
+
+[1] "vert_insect"
+
+Distribution of changes from stochastic mapping:
+	5->6		6->5
+	Min.   :32	Min.   :13
+	Median :51	Median :46
+	Mean   :50.93	Mean   :46.85
+	Max.   :78	Max.   :184
+
+95% HPD interval(5->6): [40, 61]
+95% HPD interval(6->5): [28, 66]
+
+[1] " "
