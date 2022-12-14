@@ -395,31 +395,52 @@ pollination1209 <- cache_RDS("data_output/pollination1209.csv", read_function = 
       dplyr::filter(wind_water_animal %in% c("2", "2&3", "2&4")) %>%
       dplyr::select(ParFamTax) %>% 
       dplyr::distinct()
-    # 100, a fair few! 100/433 = 23 % of families
+    # 100, a fair few! 100/434 = 23 % of families
+    
+    # how many families contain JUST wind pollinated taxa?
+    windnopolypollfams <- pollination1209 %>% 
+      dplyr::filter(wind_water_animal %in% c("2")) %>%
+      dplyr::select(ParFamTax) %>% 
+      dplyr::distinct()
+    # 59, 59/434 = 14 % of families
+    
+    # how many families contain ambophilous taxa?
+    ambofams <- pollination1209 %>% 
+      dplyr::filter(wind_water_animal %in% c("2&4")) %>%
+      dplyr::select(ParFamTax) %>% 
+      dplyr::distinct()
+    # 48, 48/434 = 11 % of families
+    
+    # how many families contain abiotic taxa?
+    abiofams <- pollination1209 %>% 
+      dplyr::filter(wind_water_animal %in% c("2&3")) %>%
+      dplyr::select(ParFamTax) %>% 
+      dplyr::distinct()
+    # 2, 2/434 = 0.5 % of families
     
     # how many families contain animal pollinated taxa?
     animalpollfams <- pollination1209 %>% 
       dplyr::filter(wind_water_animal %in% c("4", "2&4", "3&4")) %>%
       dplyr::select(ParFamTax) %>% 
       dplyr::distinct()
-    # 389, majority by far - 389/433 = 89.8% of families
+    # 389, majority by far - 389/434 = 89.6% of families
     animalpollnopolyfams <- pollination1209 %>% 
       dplyr::filter(wind_water_animal %in% c("4")) %>%
       dplyr::select(ParFamTax) %>% 
       dplyr::distinct()
-    # 373 if excluding ambophily - 373/433 = 86% of families
+    # 373 if excluding ambophily - 373/434 = 86% of families
     
     # how many families water pollinated?
     waterpollfams <- pollination1209 %>% 
       dplyr::filter(wind_water_animal %in% c("3", "2&3", "3&4")) %>%
       dplyr::select(ParFamTax) %>% 
       dplyr::distinct()
-    # 8 families with water pollination! 8/433 = 1.9%
+    # 8 families with water pollination! 8/434 = 1.8%
     waterpollnopolyfams <- pollination1209 %>% 
       dplyr::filter(wind_water_animal %in% c("3")) %>%
       dplyr::select(ParFamTax) %>% 
       dplyr::distinct()
-    # 6 families if excluding polymorphies, 6/433 = 1.4%
+    # 6 families if excluding polymorphies, 6/434 = 1.4%
     
     # how many families ONLY wind or ONLY animal pollinated?
     # first work out how many families overlap
@@ -433,22 +454,23 @@ pollination1209 <- cache_RDS("data_output/pollination1209.csv", read_function = 
       dplyr::distinct()
     windwateranimalfams <- rbind(windanimalfams, waterpolyfams)
     windwateranimalfams <- dplyr::distinct(windwateranimalfams)
-    # 64 families with both wind, water and animal pollination - 64/433 = 15%
+    # 64 families with both wind, water and animal pollination - 64/434 = 15%
     # now animal only families?
     animalonly <- animalpollfams %>%
       dplyr::filter(!(ParFamTax %in% windwateranimalfams$ParFamTax))
-    # 327 families entirely animal pollinated - 76%
+    # 327 families entirely animal pollinated - 327/434 = 75%
     # wind only families?
     windonly <- windpollfams %>%
       dplyr::filter(!(ParFamTax %in% windwateranimalfams$ParFamTax))
-    # 37 families entirely wind pollinated - 37/433 = 9%
+    # 37 families entirely wind pollinated - 37/434 = 9%
     # water only families?
     wateronly <- waterpollfams %>%
       dplyr::filter(!(ParFamTax %in% windwateranimalfams$ParFamTax))
-    # 5 families entirely water pollinated - 5/433 = 1.2%
+    # 5 families entirely water pollinated - 5/434 = 1.2%
     rm(windpollfams, animalpollfams, animalonly, windonly, windanimalfams,
        wateronly, windwateranimalfams, waterpollfams, waterpolyfams, families,
-       waterpollnopolyfams, animalpollnopolyfams)
+       waterpollnopolyfams, animalpollnopolyfams, ambofams, abiofams, 
+       windnopolypollfams)
     
     # write pollination1209 to data output folder so it can be cached!
     write_csv(pollination1209, "data_output/pollination1209.csv")
