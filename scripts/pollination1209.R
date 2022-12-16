@@ -471,15 +471,23 @@ pollination1209 <- cache_RDS("data_output/pollination1209.csv", read_function = 
     # WHAT ABOUT VERTEBRATE POLLINATION??? though sampling probably not 
     # comprehensive enough to give good estimate
     vertfams <- pollination1209 %>%
-      dplyr::filter(wind_water_vert_insect %in% c("6", "6&5")) %>%
+      dplyr::filter(wind_water_vert_insect %in% c("6", "6&5", "2&6")) %>%
       dplyr::select(ParFamTax) %>% 
       dplyr::distinct()
-    # 32 (7%) just vert, 74 (17%) inc. vert&insect fams
+    # 32 (7%) just vert, 75 (17%) inc. vert&insect fams
+    
+    # and INSECT families?
+    insectfams <- pollination1209 %>%
+      dplyr::filter(wind_water_vert_insect %in% c("5", "6&5", "2&5", "3&5")) %>%
+      dplyr::select(ParFamTax) %>% 
+      dplyr::distinct()
+    # 352 families with only insect pollination, 81%
+    # 384 families with insect pollination inc. polymorphies, 90%
     
     rm(windpollfams, animalpollfams, animalonly, windonly, windanimalfams,
        wateronly, windwateranimalfams, waterpollfams, waterpolyfams, families,
        waterpollnopolyfams, animalpollnopolyfams, ambofams, abiofams, 
-       windnopolypollfams, vertfams)
+       windnopolypollfams, vertfams, insectfams)
     
     # write pollination1209 to data output folder so it can be cached!
     write_csv(pollination1209, "data_output/pollination1209.csv")
