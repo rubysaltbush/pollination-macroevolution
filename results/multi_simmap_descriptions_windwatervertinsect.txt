@@ -1,0 +1,69 @@
+[1] "wind_water_vert_insect"
+100000 trees with a mapped discrete character with states:
+ 2, 3, 5, 6 
+
+trees have 178.99155 changes between states on average
+
+changes are of the following types:
+        2,3     2,5     2,6     3,2     3,5     3,6      5,2     5,3     5,6     6,2     6,3      6,5
+x->y 1.4673 7.69576 0.13192 0.22166 0.00861 0.00246 42.31485 0.44518 52.3377 4.99673 0.14421 69.22517
+
+mean total time spent in each state is:
+                2            3            5            6    total
+raw  7579.6907531 6.249530e+02 6.364492e+04 3.387794e+03 75237.36
+prop    0.1007437 8.307728e-03 8.458998e-01 4.504873e-02     1.00
+
+[1] "wind_water_vert_insect"
+
+Distribution of changes from stochastic mapping:
+
+	2->3		2->5
+	Min.   :0	Min.   :1
+	Median :1	Median :7
+	Mean   :1.47	Mean   :7.7
+	Max.   :5	Max.   :41
+
+	2->6		3->2
+	Min.   :0	Min.   :0
+	Median :0	Median :0
+	Mean   :0.13	Mean   :0.22
+	Max.   :6	Max.   :9
+
+	3->5		3->6
+	Min.   :0	Min.   :0
+	Median :0	Median :0
+	Mean   :0.01	Mean   :0
+	Max.   :2	Max.   :1
+
+	5->2		5->3
+	Min.   :2	Min.   :0
+	Median :47	Median :0
+	Mean   :42.31	Mean   :0.45
+	Max.   :61	Max.   :5
+
+	5->6		6->2
+	Min.   :29	Min.   :0
+	Median :50	Median :0
+	Mean   :52.34	Mean   :5
+	Max.   :106	Max.   :48
+
+	6->3		6->5
+	Min.   :0	Min.   :16
+	Median :0	Median :46
+	Mean   :0.14	Mean   :69.23
+	Max.   :6	Max.   :307
+
+95% HPD interval(2->3): [0, 2]
+95% HPD interval(2->5): [3, 13]
+95% HPD interval(2->6): [0, 1]
+95% HPD interval(3->2): [0, 1]
+95% HPD interval(3->5): [0, 0]
+95% HPD interval(3->6): [0, 0]
+95% HPD interval(5->2): [12, 52]
+95% HPD interval(5->3): [0, 1]
+95% HPD interval(5->6): [37, 75]
+95% HPD interval(6->2): [0, 33]
+95% HPD interval(6->3): [0, 1]
+95% HPD interval(6->5): [25, 209]
+
+[1] " "
