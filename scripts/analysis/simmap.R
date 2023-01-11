@@ -248,7 +248,7 @@ text(obj, rep(-5, length(obj)), T - obj, cex = 0.6)
 text(mean(obj), -10 , "time (mya)", cex = 0.8)
 rm(T, tick.spacing, min.tick, obj)
 dev.off()
-rm(wwvi_tips, RB2020_cladelabels, order_labels, family_labels, cols)
+rm(wwvi_tips, RB2020_cladelabels, order_labels, family_labels, cols, ASR_forsimmap)
 
 
 # density maps for each binary multisimmap - each one takes >10 minutes to build
@@ -451,7 +451,7 @@ table(wa_transitions$transition)
 
 # build new data frame with cumulative number of transitions
 wa_trans_cumul <- data.frame()
-for(n in 1:500){
+for(n in 1:1000){
   trans <- wa_transitions %>%
     dplyr::filter(i == n) %>%
     dplyr::group_by(transition) %>%
@@ -487,6 +487,16 @@ avg_trans_times <- wa_trans_cumul %>%
   dplyr::select(transition, trans_no, avg_time, SE_time) %>%
   dplyr::distinct()
 
+# reduce avg_trans_times to trans_avg_length
+avg_trans_times_w2a <- avg_trans_times %>%
+  dplyr::filter(transition == "wind to animal") %>%
+  dplyr::filter(trans_no <= trans_avg_length[1,2])
+avg_trans_times_a2w <- avg_trans_times %>%
+  dplyr::filter(transition == "animal to wind") %>%
+  dplyr::filter(trans_no <= trans_avg_length[2,2])
+avg_trans_times <- rbind(avg_trans_times_a2w, avg_trans_times_w2a)
+rm(avg_trans_times_a2w, avg_trans_times_w2a)
+
 # export these results to csv in case I need them
 readr::write_csv(avg_trans_times, "results/mean_transition_times_wind_animal.csv")
 
@@ -499,21 +509,19 @@ max <- max(avg_trans_times$avg_time)
 ax <- pretty(min:max, n = 20)
 wind_to_animal <- avg_trans_times %>%
   dplyr::filter(transition == "wind to animal") %>%
-  dplyr::filter(trans_no <= trans_avg_length[1,2]) %>%
   dplyr::mutate(wind_to_animal = avg_time) %>%
   dplyr::ungroup() %>%
   dplyr::select(wind_to_animal)
 animal_to_wind <- avg_trans_times %>%
   dplyr::filter(transition == "animal to wind") %>%
-  dplyr::filter(trans_no <= trans_avg_length[2,2]) %>%
   dplyr::mutate(animal_to_wind = avg_time) %>%
   dplyr::ungroup() %>%
   dplyr::select(animal_to_wind)
 wb <- hist(wind_to_animal$wind_to_animal, breaks = ax, plot = FALSE)
 bw <- hist(animal_to_wind$animal_to_wind, breaks = ax, plot = FALSE)
-plot (bw, col = my_colours$wind_water_animal[1], xlab = "time of transitions (mya)",  
+plot (bw, col = my_colours$wind_water_animal[1], xlab = "Time of transitions (mya)",  
       main = "", ylab = "number of transitions", 
-      ylim = c(0, 6), xlim = c(200,0)) # alter if x values change!
+      ylim = c(0, 8), xlim = c(200,0)) # alter if x values change!
 plot (wb, col = alpha(my_colours$wind_water_animal[3], 0.9), add = TRUE)
 dev.off()
 rm(min, max, ax, wb, bw, wind_to_animal, animal_to_wind)
@@ -559,8 +567,8 @@ plot(animal_to_wind$trans_no ~ animal_to_wind$time,
      ylab = "Cumulative number of transitions",
      cex.lab = 1.8, cex.axis = 1.8)
 
-# then loop through all data and add all points and lines to plot for 500 simulations
-for(n in 1:500){
+# then loop through all data and add all points and lines to plot for 1000 simulations
+for(n in 1:1000){
   test <- wa_transitions %>%
     dplyr::filter(i == n) %>%
     dplyr::group_by(transition) %>%
@@ -621,7 +629,7 @@ table(vi_transitions$transition)
 
 # build new data frame with cumulative number of transitions
 vi_trans_cumul <- data.frame()
-for(n in 1:500){
+for(n in 1:1000){
   trans <- vi_transitions %>%
     dplyr::filter(i == n) %>%
     dplyr::group_by(transition) %>%
@@ -656,6 +664,16 @@ avg_trans_times <- vi_trans_cumul %>%
   dplyr::select(transition, trans_no, avg_time, SE_time) %>%
   dplyr::distinct()
 
+# reduce avg_trans_times to trans_avg_length
+avg_trans_times_i2v <- avg_trans_times %>%
+  dplyr::filter(transition == "insect to vertebrate") %>%
+  dplyr::filter(trans_no <= trans_avg_length[1,2])
+avg_trans_times_v2i <- avg_trans_times %>%
+  dplyr::filter(transition == "vertebrate to insect") %>%
+  dplyr::filter(trans_no <= trans_avg_length[2,2])
+avg_trans_times <- rbind(avg_trans_times_i2v, avg_trans_times_v2i)
+rm(avg_trans_times_i2v, avg_trans_times_v2i)
+
 # export these results to csv in case I need them
 readr::write_csv(avg_trans_times, "results/mean_transition_times_vert_insect.csv")
 
@@ -668,13 +686,11 @@ max <- max(avg_trans_times$avg_time)
 ax <- pretty(min:max, n = 20)
 insect_to_vert <- avg_trans_times %>%
   dplyr::filter(transition == "insect to vertebrate") %>%
-  dplyr::filter(trans_no <= trans_avg_length[1,2]) %>%
   dplyr::mutate(insect_to_vert = avg_time) %>%
   dplyr::ungroup() %>%
   dplyr::select(insect_to_vert)
 vert_to_insect <- avg_trans_times %>%
   dplyr::filter(transition == "vertebrate to insect") %>%
-  dplyr::filter(trans_no <= trans_avg_length[2,2]) %>%
   dplyr::mutate(vert_to_insect = avg_time) %>%
   dplyr::ungroup() %>%
   dplyr::select(vert_to_insect)
@@ -682,8 +698,8 @@ wb <- hist(insect_to_vert$insect_to_vert, breaks = ax, plot = FALSE)
 bw <- hist(vert_to_insect$vert_to_insect, breaks = ax, plot = FALSE)
 plot (bw, col = my_colours$abiotic_vert_insect[2], xlab = "Time of transitions (mya)",  
       main = "", ylab = "number of transitions", 
-      ylim = c(0, 6), xlim = c(200,0)) # alter if x values change!
-plot (wb, col = alpha(my_colours$abiotic_vert_insect[3], 0.8), add = TRUE)
+      ylim = c(0, 8), xlim = c(200,0)) # alter if values change!
+plot (wb, col = alpha(my_colours$abiotic_vert_insect[3], 0.7), add = TRUE)
 dev.off()
 rm(min, max, ax, wb, bw, insect_to_vert, vert_to_insect)
 
@@ -728,8 +744,8 @@ plot(vert_to_insect$trans_no ~ vert_to_insect$time,
      ylab = "Cumulative number of transitions",
      cex.lab = 1.8, cex.axis = 1.8)
 
-# then loop through all data and add all points and lines to plot for 500 simulations
-for(n in 1:500){
+# then loop through all data and add all points and lines to plot for 1000 simulations
+for(n in 1:1000){
   test <- vi_transitions %>%
     dplyr::filter(i == n) %>%
     dplyr::group_by(transition) %>%
@@ -777,4 +793,4 @@ rm(n, test, vert_to_insect, insect_to_vert)
 
 rm(transition_times, vi_trans_cumul, trans_avg_length, avg_trans_times, vi_transitions)
 
-rm(simmaps, ASR_forsimmap)
+rm(simmaps)

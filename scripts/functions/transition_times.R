@@ -1,10 +1,10 @@
 # function to extract transition times from simulation mapping
 
 transition_times <- function(simmap){
-  # below copied from phytools blog 
+  # below adapted from Liam Revells' phytools blog 
   # http://blog.phytools.org/2015/08/getting-timing-of-trait-changes-from.html
   # extracts raw transition times from a simmap (collapses multiple transitions
-  # down into single transition events e.g. 4->2->4 becomes ?????)
+  # down into single transition events)
   # get tips and their states
   x <- phytools::getStates(simmap,"tips")
   # get unique states
@@ -29,15 +29,11 @@ transition_times <- function(simmap){
   nc <- sapply(simmap$maps, length) - 1
   ind <- which(nc > 0)
   nc <- nc[ind]
-  
-  # It would be nice to return the position where these changes are happening
-  # and maybe this could be gotten here, but too late/tired to think of it now
 
-  # getting the node heights (measure of time) across the tree
+  # getting the node heights (measure of time/branch lengths) across the tree
   H <- phytools::nodeHeights(simmap)
   maps <- simmap$maps[ind]
-  # then looping through and calculating the node heights (i.e. time) of each
-  # transition
+  # then looping through and calculating the node heights of each transition
   for(i in 1:length(maps)){
     for(j in 1:nc[i]){
       sc <- paste(names(maps[[i]])[j:(j + 1)], collapse = "->")
@@ -48,20 +44,26 @@ transition_times <- function(simmap){
   rm(nc, ind, h, H, i, j, sc, maps)
   # removing any nulls from list of changes and sorting small to large
   changes <- changes[!sapply(changes, is.null)]
-  changes <- lapply(changes, sort, decreasing = TRUE)
+  changes <- lapply(changes, sort, decreasing = FALSE)
   
-  # now convert this changes list into nice data frame output RUBY WROTE THIS BIT
+  # now convert this changes list into nice data frame output
   output <- data.frame()
   for(i in 1:length(changes)){
     df <- dplyr::bind_cols(changes[i])
     df <- df %>%
       mutate(transition = colnames(df)) %>%
-      rename(time = 1)
+      rename(nodeheight = 1)
     output <- rbind(output, df)
   }
+  
+  # node heights are the height above the root, so time but inverse along the tree
+  # to get time from node heights need to subtract from max height of tree
+  output$time <- max(nodeHeights(simmap)) - output$nodeheight
+  
+  # get rid of nodeheight column
+  output <- output[-1]
   
   # and return the output! to graph etc.
   output
 }
 
-# BUT THE NUMBERS IN "TIME" COLUMN ARE NOT ACTUALLY TIMES - THEY ARE "MAPS"!!! HOW TO CONVERT???
