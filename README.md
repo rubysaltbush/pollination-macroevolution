@@ -27,11 +27,11 @@ These are:
 
 2.`filtered_obs_ruby.csv`**insert link here** (**X**mb, GBIF records for 1201 taxa downloaded and initially filtered by Will Cornwell)
 
-The code caches several steps of the data cleaning and results here so most analyses can run without needing to download the above files.
-Running a completely fresh analysis however will require downloading these files, deleting all cached results and output in
+The code caches several steps of the data cleaning and results so most analyses can run without needing to download the above files.
+Running a completely fresh analysis will require downloading the above files, deleting all cached results and output in
 [results](https://github.com/rubysaltbush/pollination-macroevolution/tree/main/results) and
 [data_output](https://github.com/rubysaltbush/pollination-macroevolution/tree/main/data_output), and then running
-[main.R](https://github.com/rubysaltbush/pollination-macroevolution/blob/main/main.R) from the start. To complete 
-the posterior stochastic mapping in 
+[main.R](https://github.com/rubysaltbush/pollination-macroevolution/blob/main/main.R) from the start. 
+To complete the posterior stochastic mapping in 
 [multiPhylo_simmap.R](https://github.com/rubysaltbush/pollination-macroevolution/blob/main/scripts/analysis/multiPhylo_simmap.R) 
 you will need access to a computer with a lot of CPUs and memory (I ran on a machine with 36 CPUs and 300GB memory).
