@@ -40,9 +40,3 @@ vignettes/*.pdf
 
 # macOS system file
 .DS_Store
-
-# large multiPhylo (too large for GitHub)
-/data_input/SA_thin_trees_corrected.tre
-
-# large geographic data set (too large for GitHub)
-/data_input/filtered_obs_ruby.csv
