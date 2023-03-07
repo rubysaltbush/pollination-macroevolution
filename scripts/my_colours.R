@@ -50,8 +50,3 @@ names(temp) <- c("animal to wind", "wind to animal")
 my_colours$wind_animal <- scale_colour_manual(name = "transition", values = temp)
 rm(temp)
 
-# to add - colours for biome and pollination mode?
-
-
-
-

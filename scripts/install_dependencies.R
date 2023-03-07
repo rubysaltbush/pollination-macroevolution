@@ -10,7 +10,7 @@ install.packages("rnaturalearthdata") # needed to run CoordinateCleaner tests, r
 install.packages("countrycode") # needed to run CoordinateCleaner tests, run version 1.4.0
 # if installing corHMM on Linux need to install Rmpfr package in terminal first
 # using command apt install   libmpfr-dev
-install.packages("corHMM") # IMPORTANT INSTALL VERSION 2.8!!! other versions work very differently, will mess up tests for correlated evolution in particular
+install.packages("corHMM") # IMPORTANT INSTALL VERSION 2.8!!! other versions work differently, will mess up tests for correlated evolution in particular
 install.packages("phytools") # phylogenetic analysis, run version 1.0-3
 install.packages("phylolm") # for phylogenetic logistic regression, run version 2.6.2
 install.packages("doParallel") # for running tasks in parallel on multiple cores, run version 1.0.17

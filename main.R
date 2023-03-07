@@ -7,7 +7,7 @@ library(sf)
 library(raster)
 library(CoordinateCleaner) # package to clean GBIF records
 library(countrycode) # package to convert GBIF country codes for cleaning
-library(corHMM) # 20220620 UPDATED corHMM FROM CRAN rate matrices work as in github install
+library(corHMM) #  IMPORTANT INSTALL VERSION 2.8!!! other versions work differently, will mess up tests for correlated evolution in particular
 library(phytools)
 library(phylolm)
 library(parallel)
@@ -42,15 +42,19 @@ source("scripts/my_colours.R")
 # takes ~30 minutes to run, will have to press enter twice
 source("scripts/analysis/simmap.R")
 
-# correlating evolution of pollination to environment
+## correlating evolution of pollination to environment ##
 
 # first try phylogenetic logistic regression for continuous and categorical variables
 source("scripts/analysis/PGLS.R")
 
-# then run correlation models for superbiome/pollination evolution
+# run correlation models for superbiome/pollination evolution (Supplementary Material Notes 1)
 source("scripts/analysis/biomes.R")
 
 # stochastic character mapping on posterior trees to consider phylogenetic uncertainty
 # needs to be run on machine with lots of memory (~3 TB) and many (~36) cores
 # will take ~4 hours if so
-source("scripts/multiPhylo_simmap.R")
+source("scripts/analysis/multiPhylo_simmap.R")
+
+# stochastic character mapping on alternative (younger) phylogeny
+# to explore uncertainty in timing of transitions (Supplementary Material Notes 2)
+source("scripts/analysis/simmap_younger.R")

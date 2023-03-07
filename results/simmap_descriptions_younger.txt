@@ -1,0 +1,56 @@
+[1] "wind_animal_ARD"
+1000 trees with a mapped discrete character with states:
+ 2, 4 
+
+trees have 53.184 changes between states on average
+
+changes are of the following types:
+       2,4    4,2
+x->y 7.053 46.131
+
+mean total time spent in each state is:
+                2            4    total
+raw  7.375035e+03 6.714425e+04 74519.29
+prop 9.896813e-02 9.010319e-01     1.00
+
+[1] " "
+
+Distribution of changes from stochastic mapping:
+	2->4		4->2
+	Min.   :2	Min.   :40
+	Median :7	Median :46
+	Mean   :7.05	Mean   :46.13
+	Max.   :23	Max.   :57
+
+95% HPD interval(2->4): [3, 11]
+95% HPD interval(4->2): [41, 50]
+
+[1] " "
+[1] "vert_insect_ARD"
+1000 trees with a mapped discrete character with states:
+ 5, 6 
+
+trees have 88.77 changes between states on average
+
+changes are of the following types:
+        5,6    6,5
+x->y 46.778 41.992
+
+mean total time spent in each state is:
+                5            6    total
+raw  60563.141362 2.729035e+03 63292.18
+prop     0.956882 4.311804e-02     1.00
+
+[1] " "
+
+Distribution of changes from stochastic mapping:
+	5->6		6->5
+	Min.   :32	Min.   :23
+	Median :47	Median :41
+	Mean   :46.78	Mean   :41.99
+	Max.   :61	Max.   :84
+
+95% HPD interval(5->6): [38, 54]
+95% HPD interval(6->5): [28, 58]
+
+[1] " "
