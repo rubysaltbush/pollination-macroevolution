@@ -30,6 +30,9 @@ rm(cl)
 # read in prepped pollination data
 source("scripts/pollination1209.R")
 
+# run assessment of sampling quality across tree
+source("scripts/analysis/sampling.R")
+
 # run corHMM Ancestral State Reconstructions of pollination mode in angiosperms
 # takes ~4 hours to run if not already cached
 source("scripts/analysis/ASR.R")
