@@ -30,7 +30,7 @@ rm(cl)
 # read in prepped pollination data
 source("scripts/pollination1209.R")
 
-# run assessment of sampling quality across tree
+# create figure of pollination systems vs syndromes across tree
 source("scripts/analysis/sampling.R")
 
 # run corHMM Ancestral State Reconstructions of pollination mode in angiosperms

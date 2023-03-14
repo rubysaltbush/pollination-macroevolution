@@ -46,7 +46,7 @@ rownames(system_syndrome) <- system_syndrome[,1]
 system_syndrome[,1] <- NULL
 
 # and plot it!
-cols <- c("#fc8d62", "#66c2a5")
+cols <- c("#b2abd2", "#e66101")
 names(cols) <- c(0, 1)
 ape::plot.phylo(tree, type = "fan", show.tip.label = FALSE,
                      x.lim = c(-220, 220), y.lim = c(-220, 240), lwd = 1)
@@ -69,7 +69,7 @@ RB2020_cladelabels_fan(offset = 1.015)
 
 # insert legend
 legend(x = -220, y = 220, legend = c("syndrome", "system"), bg = "white",
-       fill = c("#fc8d62", "#66c2a5"), cex = 3, pt.lwd = 0.001, bty = "n",
+       fill = c("#b2abd2", "#e66101"), cex = 3, pt.lwd = 0.001, bty = "n",
        title = "Pollination data source")
 
 dev.off()
