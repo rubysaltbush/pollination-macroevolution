@@ -1,5 +1,5 @@
-# script to assess distribution of pollination system vs syndrome data across
-# angiosperm phylogeny, and quality (confidence score) of said data
+# script to visualise distribution of pollination system vs syndrome data across
+# angiosperm phylogeny
 
 # first subset data and prep
 pollination_sampling <- pollination1209 %>%
