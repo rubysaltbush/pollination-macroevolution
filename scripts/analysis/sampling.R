@@ -45,11 +45,46 @@ system_syndrome <- as.data.frame(system_syndrome)
 rownames(system_syndrome) <- system_syndrome[,1]
 system_syndrome[,1] <- NULL
 
-# and plot it!
-cols <- c("#b2abd2", "#e66101")
-names(cols) <- c(0, 1)
-ape::plot.phylo(tree, type = "fan", show.tip.label = FALSE,
-                     x.lim = c(-220, 220), y.lim = c(-220, 240), lwd = 1)
+# for some reason my data do not work with the phytools::paintBranches function
+# but I have fixed it in below version copied from phytools github
+paintBranchesFixed <- function(tree, edge, state, anc.state = "1"){
+  if(!inherits(tree, "phylo")) stop("tree should be an object of class \"phylo\".")
+  if(is.null(tree$maps)) maps<-lapply(tree$edge.length,function(x) setNames(x,anc.state))
+  else maps<-tree$maps
+  ii<-sapply(edge,function(x,y) which(y==x),y=tree$edge[,2])
+  ii<-unlist(ii) # fix added to prevent "Error in tree$edge.length[[ii[i]]] : invalid subscript type 'list'"
+  for(i in 1:length(ii)) maps[[ii[i]]]<-setNames(tree$edge.length[[ii[i]]],state)
+  ## build mapped.edge matrix
+  s<-vector()
+  for(i in 1:nrow(tree$edge)) s<-c(s,names(maps[[i]]))
+  s<-unique(s)
+  mapped.edge<-matrix(0,length(tree$edge.length),length(s),dimnames=list(edge=apply(tree$edge,1,function(x) paste(x,collapse=",")),state=s))
+  for(i in 1:length(maps)) for(j in 1:length(maps[[i]])) mapped.edge[i,names(maps[[i]])[j]]<-mapped.edge[i,names(maps[[i]])[j]]+maps[[i]][j]
+  ## add attributes to the tree
+  tree$mapped.edge<-mapped.edge
+  tree$maps<-maps
+  class(tree)<-c("simmap",setdiff(class(tree),"simmap"))
+  tree
+}
+
+# prep data for paintBranches plotting
+sys_syn <- as.factor(system_syndrome$value)
+names(sys_syn) <- rownames(system_syndrome)
+
+syn <- names(sys_syn)[sys_syn == "0"]
+sys <- names(sys_syn)[sys_syn == "1"]
+
+syntree <- paintBranchesFixed(tree, edge = sapply(syn, match, tree$tip.label), 
+                              state = "0", anc.state = "3")
+syntree <- paintBranchesFixed(syntree, edge = sapply(sys, match, tree$tip.label), 
+                              state = "1")
+
+# prepare colours for branches and tips
+cols <- c("#b2abd2", "#e66101", "black")
+names(cols) <- c("0", "1", "3")
+# and plot tree
+phytools::plotSimmap(syntree, type = "fan", ftype = "off", colors = cols,
+                     xlim = c(-220, 220), ylim = c(-220, 240), lwd = 2)
 tiplabels(pch = 15, col = cols[as.numeric(system_syndrome[tree$tip.label,])+1])
 
 # source custom arc labelling function
@@ -73,4 +108,5 @@ legend(x = -220, y = 220, legend = c("syndrome", "system"), bg = "white",
        title = "Pollination data source")
 
 dev.off()
-rm(cols, RB2020_cladelabels_fan, arclabel, system_syndrome)
+rm(cols, RB2020_cladelabels_fan, arclabel, system_syndrome, sys, syn, sys_syn,
+   paintBranchesFixed, syntree, pollination_sampling)
