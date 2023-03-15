@@ -62,7 +62,3 @@ source("scripts/analysis/multiPhylo_simmap.R")
 # to explore uncertainty in timing of transitions (Supplementary Material Notes 2)
 source("scripts/analysis/simmap_younger.R")
 
-# ASR and stochastic character mapping with vertebrate pollination constrained
-# to more recent part of phylogeny to match fossil evidence for vertebrate
-# pollination (Supplementary Material Notes 2?)
-source("scripts/analysis/vert_younger.R")
