@@ -50,7 +50,7 @@ source("scripts/analysis/simmap.R")
 # first try phylogenetic logistic regression for continuous and categorical variables
 source("scripts/analysis/PGLS.R")
 
-# run correlation models for superbiome/pollination evolution (Supplementary Material Notes 1)
+# run correlation models for superbiome/pollination evolution (Supporting Information Notes S1)
 source("scripts/analysis/biomes.R")
 
 # stochastic character mapping on posterior trees to consider phylogenetic uncertainty
@@ -59,6 +59,6 @@ source("scripts/analysis/biomes.R")
 source("scripts/analysis/multiPhylo_simmap.R")
 
 # stochastic character mapping on alternative (younger) phylogeny
-# to explore uncertainty in timing of transitions (Supplementary Material Notes 2)
+# to explore uncertainty in timing of transitions (Supporting Information Fig. S2)
 source("scripts/analysis/simmap_younger.R")
 
