@@ -1,5 +1,5 @@
 # pollination-macroevolution
-Data and analysis for the paper *Insect pollination for most of angiosperm evolutionary history*
+Data and analysis for the paper [*Insect pollination for most of angiosperm evolutionary history*](https://doi.org/10.1111/nph.18993)
 
 Authors: Ruby E. Stephens (1,2), Rachael V. Gallagher (1,3), Lily Dun (2,4), Will Cornwell (4), Hervé Sauquet (2,4)
 + Corresponding author: Ruby E. Stephens
