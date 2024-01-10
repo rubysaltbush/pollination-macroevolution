@@ -43,3 +43,6 @@ Feel free to re-use scripts and functions for your own analyses, e.g.
 [arclabel.R](https://github.com/rubysaltbush/pollination-macroevolution/blob/main/scripts/functions/arclabel.R) adds custom labels to circular phylogenies by providing the tips to draw the label between;
 
 [transition_times.R](https://github.com/rubysaltbush/pollination-macroevolution/blob/main/scripts/functions/transition_times.R) extracts the timing of transitions from a dated stochastic map
+
+Citation:
+Stephens, R. E., Gallagher, R. V., Dun, L., Cornwell, W., & Sauquet, H. (2023). Insect pollination for most of angiosperm evolutionary history. New Phytologist, 240(2), 880–891. https://doi.org/10.1111/nph.18993
